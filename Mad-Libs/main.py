@@ -14,8 +14,9 @@ adjective4 = input("Give me a adgetive: ")
 
 #mad_lib save the hole text were we change the verbs and adjectives
 
-mad_lib = f"The {adjective} boy {adjective3} quickly through the {adjective2} forest, feeling {verb1} and {adjective3} at the same \
-    time. His {verb2} legs {verb3} swiftly as he {verb4} for a {adjective3} treasure. The {adjective4} trees"
+mad_lib = f'''The {adjective} boy {adjective3} quickly through the {adjective2} forest,
+feeling {verb1} and {adjective3} at the sametime.
+His {verb2} legs {verb3} swiftly as he {verb4} for a {adjective3} treasure. The {adjective4} trees'''
 
 #We show the user the result with the changes.
 
