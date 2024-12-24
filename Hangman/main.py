@@ -33,7 +33,7 @@ def hangman():
         else:
             print("Invalid character. Please try again.")
 
-    print(alphabet, word_letters)
+    print("Congratulations! You have guessed the word: ", word)
 
 
 
