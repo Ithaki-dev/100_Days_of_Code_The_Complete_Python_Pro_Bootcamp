@@ -6,7 +6,6 @@ from nltk.corpus import words
 #Function to get a word from the nltk corpus
 def get_word(words):
     word = random.choice(words.words()).upper()
-    print(word)
     return word
 
 #Function to play the game
@@ -32,7 +31,7 @@ def hangman():
             print("You have already used that character. Please try again.")
         else:
             print("Invalid character. Please try again.")
-    print(word)
+    
     print("Congratulations! You have guessed the word: ", word)
 
 
