@@ -7,21 +7,27 @@ class Player:
     def __init__(self, letter):
         self.letter = letter #select the letter for the player x or o
 
+
     #next move given the game
     def get_move(self, game):
         pass
     
 #class for the human player
 class RandomComputerPlayer(Player):
+    
     def __init__(self, letter):
         super().__init__(letter)
+
     def get_move(self, game):
         square = random.choice(game.available_moves())
         return square
 
+#Class for human player
 class HumanPlayer(Player):
+
     def __init__(self, letter):
         super().__init__(letter)
+
     def get_move(self, game):
         valid_square = False
         val = None
