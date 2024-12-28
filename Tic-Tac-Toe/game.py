@@ -1,12 +1,12 @@
 import time
-from player import RandomComputerPlayer, SmartComputerPlayer #from Tic-Tac-Toe/player.py
+from player import HumanPlayer, RandomComputerPlayer, SmartComputerPlayer #from Tic-Tac-Toe/player.py
 
 class TicTacToe:
     def __init__(self):
         # I use a single list to represent 3x3 board
         self.board = self.make_board()
         self.current_winner = None
-        #self.current_player = 'X'
+        
     
     @staticmethod
     def make_board():
