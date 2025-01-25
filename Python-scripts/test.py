@@ -1,24 +1,15 @@
 import os
 
-def new_directory(directory, filename):
-  # Before creating a new directory, check to see if it already exists
-  if os.path.isdir(directory) == False:
-    os.mkdir(directory)
-
-  # Create the new file inside of the new directory
-  os.chdir(directory)
-  with open (filename, "w+") as file:
-    pass
-
-  # Return the list of files in the new directory
-  return os.listdir(directory)
-print(new_directory("PythonPrograms", "script.py"))
+#with open('Python-scripts/names.txt', 'w') as file:
+#    file.write('Matteo Rossi')
 
 
 
-
-
-
+import re
+log = "July 31 07:51:48 mycomputer bad_process[12345]: ERROR Performing package upgrade"
+regex = r"\[(\d+)\]"
+result = re.search(regex, log)
+print(result[0])
 
 
 
