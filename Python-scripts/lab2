@@ -1,7 +1,6 @@
 import re
 def transform_record(record):
-  new_record = re.search(",([0-9]{3}-[0-9]{3}-[0-9]{4})" )
-  print(new_record[1])
+  new_record = re.sub("(\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{4})", r"+1-\1", record)
   return new_record
 
 print(transform_record("Sabrina Green,802-867-5309,System Administrator")) 
@@ -15,3 +14,4 @@ print(transform_record("Melody Daniels,846-687-7436,Programmer"))
 
 print(transform_record("Charlie Rivera,698-746-3357,Web Developer")) 
 # Charlie Rivera,+1-698-746-3357,Web Developer
+
