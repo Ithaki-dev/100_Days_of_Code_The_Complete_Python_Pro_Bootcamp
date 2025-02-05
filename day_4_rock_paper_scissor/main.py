@@ -3,6 +3,7 @@ import random
 
 def play():
     user = input("Choice'r' for rock, 'p' for paper, 's' for scissors\n")
+    assert user in ['r', 'p', 's'], "Invalid choice"
     computer = random.choice(['r', 'p', 's'])
 
     if user == computer:
