@@ -19,14 +19,11 @@ def find_email(argv):
     # Preprocess the data
     email_dict = populate_dictionary('C:/Users/jinch/mi-portafolio-python/python-scripts/email_test/user_emails.csv')
     # Find and print the email
-    print(email_dict)
-    if email_dict.get(fullname.lower()):
-      return email_dict.get(fullname.lower())
+    if email_dict.get(fullname):
+       return email_dict.get(fullname)
     else:
       return "No email address found"
   except IndexError:
     return "Missing parameters"
 
-sys.argv.append("Blossom")
-sys.argv.append("Gill")
 print(find_email(sys.argv))
