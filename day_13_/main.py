@@ -1,0 +1,2 @@
+cat = "orange"
+print(cat)  

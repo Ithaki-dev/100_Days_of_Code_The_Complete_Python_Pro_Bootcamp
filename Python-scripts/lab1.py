@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import csv
+import sys
 
 #Convert employee data to dictionary
 def read_employees(csv_file_location):
