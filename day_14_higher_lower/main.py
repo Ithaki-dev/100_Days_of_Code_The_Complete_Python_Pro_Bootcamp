@@ -1,9 +1,11 @@
 #this a higher lower game
 import random
-import game_data
+from game_data import data as game_data
+from art import logo, vs
+
 
 def get_random_account():
-    return random.choice(game_data.data)
+    return random.choice(game_data)
 
 def format_data(account):
     account_name = account["name"]
@@ -31,6 +33,7 @@ def game():
             account_b = get_random_account()
         
         print(f"Compare A: {format_data(account_a)}")
+        print(vs)
         print(f"Against B: {format_data(account_b)}")
         
         guess = input("Who has more followers? Type 'A' or 'B': ").lower()
@@ -46,4 +49,5 @@ def game():
             print(f"Sorry, that's wrong. Final score: {score}")
 
 if __name__ == "__main__":
+    print(logo)
     game()
