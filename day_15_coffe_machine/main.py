@@ -3,13 +3,17 @@
 
 import data_coffe
 
-machine_status = True
-user_choice = input("What would you like? (espresso/latte/cappuccino): ")  
+def coffe_machine():
+    user_choice = "on"
+    machine = data_coffe.coffe_machine()  
+    while user_choice != "off":
+        user_choice = input("What would you like? (espresso/latte/cappuccino): ")
+        if user_choice == "report":
+            print(machine)  
+        elif user_choice == "espresso" or user_choice == "latte" or user_choice == "cappuccino":
+            print(machine.make_coffe(user_choice))
+        else:
+            print("Invalid choice")
 
-
-while user_choice != "off":
-    if user_choice == "report":
-        print(data_coffe.coffe_machine())  
-    elif user_choice == "espresso" or user_choice == "latte" or user_choice == "cappuccino":
-        print(data_coffe.coffe_machine().make_coffe(user_choice))
-    
+if __name__ == "__main__":
+    coffe_machine()
