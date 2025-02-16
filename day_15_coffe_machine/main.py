@@ -12,6 +12,9 @@ def coffe_machine():
             print(machine)  
         elif user_choice == "espresso" or user_choice == "latte" or user_choice == "cappuccino":
             print(machine.make_coffe(user_choice))
+        elif user_choice == "off":
+            print("Goodbye")
+            break
         else:
             print("Invalid choice")
 
