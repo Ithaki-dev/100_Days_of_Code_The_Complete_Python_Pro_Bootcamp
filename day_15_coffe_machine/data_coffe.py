@@ -11,9 +11,6 @@ class coffe_machine:
         self.cost = 0
         self.user_choice = ""
     
-    def __str__(self):
-        return f"Water: {self.water}ml\nMilk: {self.milk}ml\nCoffee: {self.coffee}g\nMoney: ${self.money}\n"
-    
     def make_coffe(self, user_choice):
         self.user_choice = user_choice
         self.cost = menu[user_choice]["cost"]
@@ -42,6 +39,9 @@ class coffe_machine:
             self.money += self.cost
             change = total - self.cost
             return f"Here is ${change} in change. Here is your {self.user_choice} ☕️. Enjoy!"
+        
+    def __str__(self):
+        return f"Water: {self.water}ml\nMilk: {self.milk}ml\nCoffee: {self.coffee}g\nMoney: ${self.money}\n"
     
 menu = {
     "espresso": {
