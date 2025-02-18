@@ -6,7 +6,7 @@ class Question():
         self.text = q_text
         self.answer = q_answer
 
-    def __str__(self):
-        return f"Question: {self.text} \n Answer: {self.answer}"
+    #def __str__(self):
+    #    return f"Question: {self.text} \n Answer: {self.answer}"
 
     
