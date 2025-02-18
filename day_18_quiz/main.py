@@ -5,6 +5,10 @@ from data import question_data
 question_bank=[]
 
 for data in question_data:
-    question_bank.append(Question(data))
+    text = data["text"]
+    answer = data["answer"]
+    quiz = Question(text,answer)
+    #print(text,answer)
+    question_bank.append(quiz)
 
 print(question_bank)
