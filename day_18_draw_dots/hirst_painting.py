@@ -1,5 +1,7 @@
 import colorgram
+import os
 
-colors = colorgram.extract('C:\\Users\\jinch\\mi-portafolio-python\\day_18_draw_dots',6)
+relative_path = os.path.join('day_18_draw_dots', 'image.jpg')
+colors = colorgram.extract(relative_path,6)
 
 print(colors)
