@@ -20,7 +20,6 @@ for color in color_list:
 if user_bet:
     is_race_on = True
 
-
 while is_race_on:
 
     for turtle in all_turtles:
@@ -29,7 +28,6 @@ while is_race_on:
         if turtle.xcor() > 200:
             is_race_on = False
             winning_color = turtle.color()
-            print(winning_color)
             if winning_color[0] == user_bet:
                 print(f"You've won! The {winning_color[0]} turtle won the race.")
                 break
