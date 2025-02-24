@@ -16,6 +16,19 @@ class Score(Turtle):
         self.write(f"Score: {self.score}", align="center",
                     font=("Courier", 24, "normal"))
         
+    def game_over(self):
+        self.goto(0, 0)
+        self.write("Game Over!", align="center", font=("Courier", 24, "normal"))
+        self.hideturtle()
+        
     def increase_score(self):
         self.score += 1
+        self.clear()
         self.update_score()
+
+    def reset_score(self):
+        self.score = 0
+        self.update_score()
+        
+
+    
