@@ -7,7 +7,7 @@ data_list = []
 current_path = os.path.dirname(__file__)
 file_path = current_path + '\weather_data.csv'
 temperature =[]
-
+# My solution
 # def read_csv(file_path):
 #     with open(file_path, 'r') as file:
 #         for line in file:
@@ -17,7 +17,7 @@ temperature =[]
 # if __name__ == '__main__':
 #     read_csv(file_path)
 #     print(data_list)
-
+# my other solution
 # def process_csv(file_path):
 #     with open(file_path, 'r') as file:
         
@@ -33,6 +33,7 @@ temperature =[]
 
 #     print(temperature)
 
+#Using pandas library
 def process_csv_pandas(file_path):
     df = pandas.read_csv(file_path)
     
@@ -42,7 +43,28 @@ if __name__ == '__main__':
     data = process_csv_pandas(file_path)
     print(data)
     print(data['temp'])
-    print(data['temp'].mean())
-    print(data['temp'].max())
-    print(data['temp'].min())
-    print(data['temp'].std())
+    # print(data['temp'].mean())
+    # print(data['temp'].max())
+    # print(data['temp'].min())
+    # print(data['temp'].std())
+    # print(data['condition'])
+
+    #get data in row 1
+    # print(data[data.day == "Monday"])
+
+    # get the row with the highest temperature
+    # print(data.loc[data['temp'].idxmax()])
+
+    #Convert monday temperature to fahrenheit
+    monday_temp = data[data.day == "Monday"]
+    monday_temp_f = monday_temp['temp'] * 9/5 + 32
+    print(f"The temperature on Monday in Fahrenheit is: {monday_temp_f.values[0]}")
+
+    #Create a dataframe from scratch
+    data_dict = {
+        'students': ['Amy', 'James', 'Angela'],
+        'scores': [76, 56, 65]
+    }
+    df = pandas.DataFrame(data_dict)
+    print(df)
+    
