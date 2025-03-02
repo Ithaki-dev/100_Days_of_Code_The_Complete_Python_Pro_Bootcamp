@@ -1,70 +1,33 @@
-#ScriptFile for processing csv
-import os
-import csv
+import turtle
 import pandas
+import os
 
-data_list = []
+# Set up the screen
 current_path = os.path.dirname(__file__)
-file_path = current_path + '\weather_data.csv'
-temperature =[]
-# My solution
-# def read_csv(file_path):
-#     with open(file_path, 'r') as file:
-#         for line in file:
-#             data_list.append(line.strip().split(','))
-#     return data_list
+screen = turtle.Screen()
+screen.title("U.S. States Game")
+image = current_path + "\\blank_states_img.gif"
+screen.addshape(image)
+turtle.shape(image)
 
-# if __name__ == '__main__':
-#     read_csv(file_path)
-#     print(data_list)
-# my other solution
-# def process_csv(file_path):
-#     with open(file_path, 'r') as file:
-        
-#         reader = csv.DictReader(file)
-#         for row in reader:
-#             data_list.append(row)
-#             print(row)
-#             temperature.append(int(row['temp']))
-#     return data_list
+# Load the state data
+data = pandas.read_csv(current_path +"\\50_states.csv")
 
-# if __name__ == '__main__':
-#     process_csv(file_path)
+# Create a dictionary to hold the state names and their coordinates
+states = data.state.to_list()
+states_dict = {state: (data.x[data.state == state].values[0], data.y[data.state == state].values[0]) for state in states}
 
-#     print(temperature)
+# Create a turtle for each state
+state_turtles = []
+for state in states:
+    t = turtle.Turtle()
+    t.hideturtle()
+    t.penup()
+    t.goto(states_dict[state])
+    t.write(state)
+    state_turtles.append(t)
+    t.onclick(lambda state=state: check_answer(state))
+    t.speed(0)
+    t.showturtle()
 
-#Using pandas library
-def process_csv_pandas(file_path):
-    df = pandas.read_csv(file_path)
-    
-    return df
-
-if __name__ == '__main__':
-    data = process_csv_pandas(file_path)
-    print(data)
-    print(data['temp'])
-    # print(data['temp'].mean())
-    # print(data['temp'].max())
-    # print(data['temp'].min())
-    # print(data['temp'].std())
-    # print(data['condition'])
-
-    #get data in row 1
-    # print(data[data.day == "Monday"])
-
-    # get the row with the highest temperature
-    # print(data.loc[data['temp'].idxmax()])
-
-    #Convert monday temperature to fahrenheit
-    monday_temp = data[data.day == "Monday"]
-    monday_temp_f = monday_temp['temp'] * 9/5 + 32
-    print(f"The temperature on Monday in Fahrenheit is: {monday_temp_f.values[0]}")
-
-    #Create a dataframe from scratch
-    data_dict = {
-        'students': ['Amy', 'James', 'Angela'],
-        'scores': [76, 56, 65]
-    }
-    df = pandas.DataFrame(data_dict)
-    print(df)
-    
+screen.exitonclick()
