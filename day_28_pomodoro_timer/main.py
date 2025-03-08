@@ -10,11 +10,19 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 1
-SHORT_BREAK_MIN = 1
-LONG_BREAK_MIN = 1
+WORK_MIN = 25
+SHORT_BREAK_MIN = 5
+LONG_BREAK_MIN = 20
 REPS = 0
+timer = None
 # ---------------------------- TIMER RESET ------------------------------- # 
+def reset_timer():
+    global REPS
+    window.after_cancel(timer)
+    REPS = 0
+    canvas.itemconfig(timer_text, text="00:00")
+    timer_label.config(text="Timer", fg=GREEN)
+    checkmark_label.config(text="")
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
@@ -44,7 +52,8 @@ def countdown(count):
     time_format = "{:02d}:{:02d}".format(minutes, seconds)
     canvas.itemconfig(timer_text, text=time_format)
     if count > 0:
-        window.after(1000, countdown, count-1)
+        global timer
+        timer = window.after(1000, countdown, count-1)
     else:
         start_timer()
         #check every 2 reps add a checkmark using checkmark_label
@@ -55,15 +64,6 @@ def countdown(count):
                 mark += '✓'
             checkmark_label.config(text=mark)
             
-
-
-
-
-        
-
-
-
-
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Pomodoro Timer")
@@ -73,7 +73,6 @@ canvas =  Canvas(width=200, height=224, bg=YELLOW)
 bg_image = PhotoImage(file=current_path+"\\tomato.png")
 canvas.create_image(103,112, image=bg_image)
 canvas.grid(column=1,row=1)
-
 
 #TIMER TEXT
 timer_text = canvas.create_text(103, 112, text="00:00", fill="white", font=(FONT_NAME, 35, "bold"))
@@ -87,13 +86,11 @@ start_button = Button(text="Start", font=(FONT_NAME, 15), bg=YELLOW, highlightth
 start_button.grid(column=0, row=2)
 
 #RESET BUTTON
-reset_button = Button(text="Reset", font=(FONT_NAME, 15), bg=YELLOW, highlightthickness=0)
+reset_button = Button(text="Reset", font=(FONT_NAME, 15), bg=YELLOW, highlightthickness=0, command=reset_timer)
 reset_button.grid(column=2, row=2)
 
 #LABEL CHECKMARK
 checkmark_label = Label(font=(FONT_NAME, 20, "bold"), fg=GREEN, bg=YELLOW, highlightthickness=0)
 checkmark_label.grid(column=1, row=3)
-
-
 
 window.mainloop()
