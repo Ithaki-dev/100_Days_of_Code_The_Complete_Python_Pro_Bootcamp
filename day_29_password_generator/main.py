@@ -38,6 +38,10 @@ def save_password():
     email = email_entry.get()
     password = password_entry.get()
 
+    if not website or not email or not password:
+        messagebox.showerror(title="Error", message="Please fill out all fields.")
+        return
+
     #save info into a json file
     try:
         with open(current_path + "\\data.json", "r") as file:
