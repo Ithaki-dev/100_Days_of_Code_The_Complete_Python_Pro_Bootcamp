@@ -3,6 +3,7 @@ import random
 import string
 from tkinter import *
 from tkinter import messagebox
+import json
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 # Initialize current path
 current_path = os.path.dirname(__file__ )
@@ -13,6 +14,24 @@ def generate_password():
     password_entry.insert(0, password)
     password_entry.focus()
 
+# ----------------------------SEARCH WEBSITE ------------------------------- #
+def search_website():
+    website = website_entry.get()
+
+    try:
+        with open(current_path + "\\data.json", "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        messagebox.showerror(title="Error", message="No data file found.")
+        return
+
+    if website in data:
+        email = data[website]["email"]
+        password = data[website]["password"]
+        messagebox.showinfo(title=website, message=f"Email: {email}\nPassword: {password}")
+    else:
+        messagebox.showinfo(title=website, message="No saved data for this website.")
+
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save_password():
     website = website_entry.get()
@@ -21,13 +40,20 @@ def save_password():
 
     #save info into a json file
     try:
-        with open(current_path+"\\data.json", "a") as file:
-            file.write(f'{{"website": "{website}", "email": "{email}", "password": "{password}"}}\n')
-            messagebox.showinfo(title="Password Saved", message=f"Password for {website} has been saved!")
+        with open(current_path + "\\data.json", "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = {}
 
-    except Exception as e:
-        messagebox.showerror(title="Error", message=f"There was an error saving the password. Error: {str(e)}")
+    data[website] = {
+        "email": email,
+        "password": password
+    }
 
+    with open(current_path + "\\data.json", "w") as file:
+        json.dump(data, file, indent=4)
+
+    messagebox.showinfo(title="Saved Password", message="Password saved successfully!")
     # Clear the text boxes
     website_entry.delete(0, END)
     email_entry.delete(0, END)
@@ -48,9 +74,13 @@ website_label = Label(text="Website:")
 website_label.grid(column=0, row=1)
 
 # Website entry
-website_entry = Entry(width=55)
+website_entry = Entry(width=35)
 website_entry.grid(column=1, row=1, columnspan=2, sticky="w")
 website_entry.focus()
+
+# Search website Button
+search_button = Button(text="Search", width=15, command=search_website)
+search_button.grid(column=2, row=1)
 
 # Email/Username label
 email_label = Label(text="Email/Username:")
@@ -70,8 +100,8 @@ password_entry = Entry(width=35)
 password_entry.grid(column=1, row=3, sticky="w")
 
 # Generate password button
-generate_password_button = Button(text="Generate Password", command=generate_password)
-generate_password_button.grid(column=2, row=3, sticky="e")
+generate_password_button = Button(text="Generate Password", width=15, command=generate_password)
+generate_password_button.grid(column=2, row=3)
 
 # Save password button
 save_password_button = Button(text="Save Password", width=35, command=save_password)

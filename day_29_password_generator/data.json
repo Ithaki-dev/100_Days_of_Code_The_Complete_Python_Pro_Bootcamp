@@ -1,1 +1,10 @@
-{"website": "facebook", "email": "rquesada@outlook.com", "password": "cocoloco24"}
+{
+    "facebook": {
+        "email": "rquesada@outlook.com",
+        "password": "cocolaocal"
+    },
+    "amazon": {
+        "email": "rquesada@outlook.com",
+        "password": "colodldoc"
+    }
+}
