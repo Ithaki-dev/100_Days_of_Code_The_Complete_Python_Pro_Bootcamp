@@ -15,9 +15,22 @@ def convert_to_nato(word):
     
     return nato_words
 
+
+word=""
 # test the function
-word = input("Enter a word: ")
-nato_words = convert_to_nato(word)
-print(nato_words)
+while True:
+    word = input("Enter a word: ")
+    print("Enter 'quit' to exit.")
+    if word.lower() == 'quit':
+        break
+    # catch if the input is not a letter
+    try:
+        if not word.isalpha():
+            raise ValueError("Input should be a letter")
+    except ValueError as e:
+        print(e)
+    else:
+        nato_words = convert_to_nato(word)
+        print(nato_words)
 
 
