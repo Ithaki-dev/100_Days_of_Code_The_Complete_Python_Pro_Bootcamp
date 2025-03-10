@@ -19,10 +19,10 @@ def save_password():
     email = email_entry.get()
     password = password_entry.get()
 
-    #save info into a txt
+    #save info into a json file
     try:
-        with open(current_path+"\\data.txt", "a") as file:
-            file.write(f"{website} | {email} | {password}\n")
+        with open(current_path+"\\data.json", "a") as file:
+            file.write(f'{{"website": "{website}", "email": "{email}", "password": "{password}"}}\n')
             messagebox.showinfo(title="Password Saved", message=f"Password for {website} has been saved!")
 
     except Exception as e:
