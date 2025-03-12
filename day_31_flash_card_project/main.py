@@ -30,9 +30,9 @@ def new_word():
     print(random_french,random_english)
     canvas.itemconfig(word_text, text=random_french)
 
-    window.after(3000, lambda: canvas.itemconfig(card, image=card_back_png))
-    window.after(3000, lambda: canvas.itemconfig(language_text, text="English"))
-    window.after(3000, lambda: canvas.itemconfig(word_text, text=random_english))
+    window.after(30000, lambda: canvas.itemconfig(card, image=card_back_png))
+    window.after(30000, lambda: canvas.itemconfig(language_text, text="English"))
+    window.after(30000, lambda: canvas.itemconfig(word_text, text=random_english))
     return
 
 # Remove the learned word from data.csv file
