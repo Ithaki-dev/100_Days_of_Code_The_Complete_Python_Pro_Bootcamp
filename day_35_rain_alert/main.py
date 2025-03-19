@@ -5,19 +5,26 @@ OWM_Endpoint = "http://api.openweathermap.org/data/2.5/forecast"
 api_key = "ca07893fbf4a5b125b26df9a51a181c1"
 
 weather_params = {
-    "lat":10.3238,
-    "lon":-84.4271,
-    "appid": api_key
+    "lat": 39.48,
+    "lon": -0.7532,
+    "appid": api_key,
+    "units": "metric",
+    "cnt": 4  # Number of days to get forecast for
 
 }
     
 
 response = requests.get(OWM_Endpoint, params=weather_params)
-print(response.json())
+response.raise_for_status()
 
 
-# Convert the dictionary to a JSON string
-weather_data_json = json.dumps(response.json())
-# save response in json format file
-with open('weather_data.json', 'w') as f:
-    f.write(weather_data_json)
+#  Check every id of the weather in response and if any of them is less than 700 print umbrella
+
+# # Check every id of the weather in response and if any of them is less than 700 print umbrella 
+
+weather_data = response.json()["list"]
+print(weather_data[1]["weather"][0]["id"])
+for weather_element in weather_data:
+    if weather_element["weather"][0]["id"] < 700:
+        print("It's going to rain today!")
+        break
