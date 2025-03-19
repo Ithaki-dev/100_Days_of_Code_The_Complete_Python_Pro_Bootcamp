@@ -50,14 +50,31 @@ class QuizInterface:
         q_text = self.quiz.next_question()
         self.canvas.itemconfig(self.question_text,text= q_text)
 
-    def check_answer(self, is_correct):
-        self.quiz.check_answer(is_correct)
-        self.score_label.config(text=f"Score: {self.quiz.score}")
-        self.get_next_question()
+    def change_white(self):
+        self.canvas.config(background="white")
 
+    def check_answer(self, is_correct):
+        answer = self.quiz.check_answer(is_correct)
+        self.score_label.config(text=f"Score: {self.quiz.score}")
+        
+        if answer is True:
+            self.canvas.config(background="Green")
+            self.window.after(2000, self.get_next_question)
+            
+      
+        else:
+            self.canvas.config(background="red")
+            self.window.after(2000, self.get_next_question)
+            
+        self.window.after(2000, self.change_white)
+        
+
+        
      # Check if all questions are answered
         if self.quiz.still_has_questions():
             return
         # Close the window after finishing all questions
         self.window.quit()
+
+
     
