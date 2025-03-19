@@ -35,11 +35,11 @@ class QuizInterface:
 
         # True Button
         true_button_png = PhotoImage(file=true_path)
-        self.true_button = Button(image=true_button_png, highlightthickness=0, background=THEME_COLOR)
+        self.true_button = Button(image=true_button_png, highlightthickness=0, background=THEME_COLOR,command=lambda: self.check_answer("true"))
         self.true_button.grid(row=2, column=0, padx=20, pady=20)
         # False Button
         false_button_png = PhotoImage(file=false_path)
-        self.false_button = Button(image=false_button_png, highlightthickness=0, background=THEME_COLOR)
+        self.false_button = Button(image=false_button_png, highlightthickness=0, background=THEME_COLOR,command=lambda: self.check_answer("false"))
         self.false_button.grid(row=2, column=1, padx=20, pady=20)
 
         self.get_next_question()
@@ -50,4 +50,14 @@ class QuizInterface:
         q_text = self.quiz.next_question()
         self.canvas.itemconfig(self.question_text,text= q_text)
 
+    def check_answer(self, is_correct):
+        self.quiz.check_answer(is_correct)
+        self.score_label.config(text=f"Score: {self.quiz.score}")
+        self.get_next_question()
+
+     # Check if all questions are answered
+        if self.quiz.still_has_questions():
+            return
+        # Close the window after finishing all questions
+        self.window.quit()
     
