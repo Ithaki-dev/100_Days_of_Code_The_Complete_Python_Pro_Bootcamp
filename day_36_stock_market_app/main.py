@@ -1,3 +1,4 @@
+import datetime
 import requests
 
 
@@ -6,6 +7,12 @@ COMPANY_NAME = "Tesla Inc"
 
 STOCK_ENDPOINT = "https://www.alphavantage.co/query"
 NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
+# get yesterday date
+yesterday = str(datetime.date.today() - datetime.timedelta(days=1))
+day_before_yesterday = str(datetime.date.today() - datetime.timedelta(days=2))
+print(yesterday)
+
+
 
 
 ## STEP 1: Use https://newsapi.org/docs/endpoints/everything
@@ -13,10 +20,19 @@ NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 #HINT 1: Get the closing price for yesterday and the day before yesterday. Find the positive difference between the two prices. e.g. 40 - 20 = -20, but the positive difference is 20.
 #HINT 2: Work out the value of 5% of yerstday's closing stock price. 
 
-url = 'https://www.alphavantage.co/query?function=MARKET_STATUS&apikey=demo'
-r = requests.get(url)
-data = r.json()
-print(data)
+parameters = {
+    "function": "TIME_SERIES_DAILY",
+    "symbol": STOCK,
+    "apikey": "Q86BQDAF5401LE5C",
+}
+
+response = requests.get(STOCK_ENDPOINT, params=parameters)
+data = response.json()
+
+yesterday_closing_price = data["Time Series (Daily)"][yesterday]["1. open"]
+day_before_yesterday_price = data["Time Series (Daily)"][day_before_yesterday]["4. close"]
+
+print(yesterday_closing_price, day_before_yesterday_price)
 
 ## STEP 2: Use https://newsapi.org/docs/endpoints/everything
 # Instead of printing ("Get News"), actually fetch the first 3 articles for the COMPANY_NAME. 
