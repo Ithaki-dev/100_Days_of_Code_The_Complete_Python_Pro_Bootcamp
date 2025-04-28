@@ -4,13 +4,12 @@ import requests
 from datetime import datetime
 import os
 
-APP_ID = "637f469c"
-API_KEY = "16dfc465b9e45ab7bf17d96915618a55"
+APP_ID = "your_app_id"  # Replace with your actual Nutritionix App ID
+API_KEY = "your_api_key"  # Replace with your actual Nutritionix API Key
 NUTRITIONIX_ENDPOINT = "https://trackapi.nutritionix.com/v2/natural/exercise"
-SHEETY_ENDPOINT = "https://api.sheety.co/48bf65172daafcb3ac2a7f35015c2f7a/myWorkouts/workouts"
-
-SHEETY_USERNAME = "rquesada"
-SHEETY_PASSWORD = "sdvaeryfcdvbds"
+SHEETY_ENDPOINT = "https://api.sheety.co/your_sheety_endpoint"  # Replace with your actual Sheety endpoint
+SHEETY_USERNAME = "your_sheety_username"  # Replace with your actual Sheety username
+SHEETY_PASSWORD = "oyur_sheety_password"  # Replace with your actual Sheety password
 SHEETY_AUTH = (SHEETY_USERNAME, SHEETY_PASSWORD)
 
 # Get user input for exercise and duration
