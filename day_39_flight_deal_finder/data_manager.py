@@ -34,10 +34,11 @@ class DataManager:
 
     def get_data(self):
         response = requests.get(f"{self.endpoint}", auth=self.auth, headers=self.headers)
-        pprint(response.json())
         if response.status_code == 200:
             self.data = response.json()
-            return self.data
+            # get the data from prices
+            sheet_data = self.data['prices']
+            return sheet_data
         else:
             print(f"Error: {response.status_code}")
             return None
