@@ -43,6 +43,14 @@ class DataManager:
             print(f"Error: {response.status_code}")
             return None
         
+    def update_data(self, data):
+        for item in data:
+            response = requests.put(f"{self.endpoint}/{item['id']}", json=item, auth=self.auth, headers=self.headers)
+            if response.status_code == 200:
+                print(f"Data updated successfully for ID: {item['id']}")
+            else:
+                print(f"Error updating data for ID: {item['id']}. Status code: {response.status_code}")
+        
 if __name__ == "__main__":
     data_manager = DataManager()
     data = data_manager.get_data()

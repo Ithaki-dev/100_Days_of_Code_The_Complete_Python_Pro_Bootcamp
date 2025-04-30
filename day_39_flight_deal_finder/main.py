@@ -6,15 +6,14 @@
 import os
 import pprint
 # from flight_data import FlightData
-# from flight_search import FlightSearch
+from flight_search import FlightSearch
 from data_manager import DataManager
 # from notification_manager import NotificationManager
 
 prices = DataManager()
 sheety_data = prices.get_data()
 if sheety_data is not None:
-    print("Data retrieved successfully.")
-   
-else:
-    print("Failed to retrieve data.")
-
+    fligth = FlightSearch()
+    fligth_data = fligth.add_iata_codes(sheety_data)
+    print(fligth_data)
+    fligth.add_iata_codes(fligth_data)
