@@ -6,13 +6,10 @@ import os
 import requests
 import json
 from pprint import pprint
+from dotenv import load_dotenv
 
-#set environment variables
-os.environ['SHEETY_ENDPOINT'] = 'https://api.sheety.co/48bf65172daafcb3ac2a7f35015c2f7a/flightDeals/prices'
-os.environ['SHEETY_USERNAME'] = 'rquesada'
-os.environ['SHEETY_PASSWORD'] = 'oaksnchwejsbns'
-os.environ['SHEETY_SHEET_NAME'] = 'prices'
-os.environ['SHEETY_BASIC_AUTH'] = 'Basic cnF1ZXNhZGE6b2Frc25jaHdlanNibnM='
+
+load_dotenv()
 
 # Get the environment variables
 SHEETY_ENDPOINT = os.getenv('SHEETY_ENDPOINT')
@@ -33,7 +30,7 @@ class DataManager:
         }
 
     def get_data(self):
-        response = requests.get(f"{self.endpoint}", auth=self.auth, headers=self.headers)
+        response = requests.get(f"{self.endpoint}", headers=self.headers)
         if response.status_code == 200:
             self.data = response.json()
             # get the data from prices
@@ -45,7 +42,7 @@ class DataManager:
         
     def update_data(self, data):
         for item in data:
-            response = requests.put(f"{self.endpoint}/{item['id']}", json=item, auth=self.auth, headers=self.headers)
+            response = requests.put(f"{self.endpoint}/{item['id']}", json={"price": item}, headers=self.headers)
             if response.status_code == 200:
                 print(f"Data updated successfully for ID: {item['id']}")
             else:
@@ -53,12 +50,10 @@ class DataManager:
         
 if __name__ == "__main__":
     data_manager = DataManager()
-    data = data_manager.get_data()
-    if data:
-        print("Data retrieved successfully.")
-        if data is not None:
-            pprint(data)
-        else:
-            print("No data to display.")
-    else:
-        print("Failed to retrieve data.")
+
+    new_data = DataManager()
+    new_data.update_data(data_test)
+
+    updated_data = new_data.get_data()
+    print(updated_data)
+    
