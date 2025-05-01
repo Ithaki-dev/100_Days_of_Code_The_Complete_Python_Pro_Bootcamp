@@ -49,42 +49,43 @@ class FlightSearch:
             print(f"Error: {response.status_code}")
             return None
 
-    def search_flights(self, origin, destination, date_from, date_to):
+    def get_city_code(self, city_name):
         access_token = self.get_access_token()
-        print(access_token)
-        if access_token:
-            headers = {
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json",
-            }
-            params = {
-                "fly_from": origin,
-                "fly_to": destination,
-                "date_from": date_from,
-                "date_to": date_to,
-                "curr": currency_code,
-            }
-            response = requests.get(f"{self.endpoint}/v2/search", headers=headers, params=params)
-            if response.status_code == 200:
-                flight_data = response.json()
-                return flight_data
-            else:
-                print(f"Error: {response.status_code}")
-                return None
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+        params = {
+            "keyword": city_name,  # City to search
+            "include": "AIRPORTS"  # Include airports
+        }
+        # This method is for getting the IATA code for a city
+        response = requests.get(f"{self.endpoint}/v1/reference-data/locations/cities", headers=headers, params=params)
+        response.raise_for_status()  # Raise an error for bad responses
+        # Parse the response
+        json_data = response.json()
+        if json_data['data']:
+            return json_data['data'][0]['iataCode']
         else:
-            print("Failed to get access token.")
+            print(f"No IATA code found for {city_name}.")
             return None
-    
+
     def add_iata_codes(self, data):
         for city in data:
             if city['iataCode'] == "":
-                city['iataCode'] = "TESTING"
+                # Get the IATA code for the city
+                city_name = city['city']
+                iata_code = self.get_city_code(city_name)
+                if iata_code:
+                    city['iataCode'] = iata_code
+                else:
+                    print(f"Could not find IATA code for {city_name}.") 
         return data
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     flight_search = FlightSearch()
+    flight_search = FlightSearch()
 
-#     access_token = flight_search.get_access_token()
-#     flight_data = flight_search.search_flights("SJO", "LAX", "2023-12-01", "2023-12-15")
-#     print(flight_data)
+
+
+    

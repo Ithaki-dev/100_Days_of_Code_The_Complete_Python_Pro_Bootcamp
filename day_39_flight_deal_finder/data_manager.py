@@ -48,12 +48,3 @@ class DataManager:
             else:
                 print(f"Error updating data for ID: {item['id']}. Status code: {response.status_code}")
         
-if __name__ == "__main__":
-    data_manager = DataManager()
-
-    new_data = DataManager()
-    new_data.update_data(data_test)
-
-    updated_data = new_data.get_data()
-    print(updated_data)
-    
