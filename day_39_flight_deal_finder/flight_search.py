@@ -10,9 +10,7 @@ from pprint import pprint
 load_dotenv()
 
 # Global variables for the Flight Search API
-country_code = "CR"  # Costa Rica
-# IATA code for Costa Rica
-city_code = "SJO"  # Juan Santamaria International Airport
+country_code = "SJO"  # Costa Rica
 # currency code for Costa Rica
 currency_code = "USD"  # US Dollar
 
@@ -81,10 +79,38 @@ class FlightSearch:
                 else:
                     print(f"Could not find IATA code for {city_name}.") 
         return data
+    
+    def flight_search(self, destination, departure_date):
+        access_token = self.get_access_token()
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+        params = {
+            "originLocationCode": country_code,
+            "destinationLocationCode": destination,
+            "departureDate": departure_date,
+            "adults": 1,
+            "currencyCode": currency_code,  # Ensure currency code is included
+            "max": 5  # Limit the number of results for testing
+        }
+        response = requests.get(f"{self.endpoint}/v2/shopping/flight-offers", headers=headers, params=params)
+        if response.status_code != 200:
+            print(f"Error: {response.status_code}, {response.text}")  # Log detailed error
+
+        response = requests.get(f"{self.endpoint}/v2/shopping/flight-offers", headers=headers, params=params)
+        response.raise_for_status()
+        print(f"Response status code: {response.status_code}")
+        return response.json()
+
 
 if __name__ == "__main__":
 
     flight_search = FlightSearch()
+    # test the flight search
+    test = flight_search.flight_search("LAX", "2025-06-06")
+    # test the get_city_code method
+    print(test)
 
 
 
