@@ -92,16 +92,18 @@ class FlightSearch:
             "departureDate": departure_date,
             "adults": 1,
             "currencyCode": currency_code,  # Ensure currency code is included
-            "max": 5  # Limit the number of results for testing
+            "max": 3  # Limit the number of results for testing
         }
         response = requests.get(f"{self.endpoint}/v2/shopping/flight-offers", headers=headers, params=params)
         if response.status_code != 200:
             print(f"Error: {response.status_code}, {response.text}")  # Log detailed error
+        # Parse the response
+        json_data = response.json()
+        # save the response to a JSON file for debugging
+        with open("flight_search_response.json", "w") as f:
+            json.dump(json_data, f, indent=4)
 
-        response = requests.get(f"{self.endpoint}/v2/shopping/flight-offers", headers=headers, params=params)
-        response.raise_for_status()
-        print(f"Response status code: {response.status_code}")
-        return response.json()
+        return json_data  # Return the JSON data for further processing
 
 
 if __name__ == "__main__":
