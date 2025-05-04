@@ -1,11 +1,33 @@
-# This is an app for search cheap flights
-# It uses the Flight Search API to find flight deals
-# It uses the Data Manager to save the data in a Google Sheet
-# It uses Twilio to send SMS messages with the flight deals
+
+"""
+This script is an application for searching cheap flights using the Flight Search API. 
+It integrates with a Google Sheet to manage flight data and uses Twilio to send SMS notifications 
+for flight deals.
+Modules:
+- datetime: For handling date and time operations.
+- os: For interacting with the operating system.
+- flight_data: Contains functionality to find the cheapest flight.
+- flight_search: Handles flight search operations using the Flight Search API.
+- data_manager: Manages data storage and retrieval from a Google Sheet.
+- notification_manager: Sends notifications via SMS using Twilio.
+Classes:
+- DataManager: Handles data retrieval and updates for the Google Sheet.
+- FlightSearch: Provides methods to search for flights and retrieve IATA codes.
+- NotificationManager: Sends SMS notifications for flight deals.
+Workflow:
+1. Retrieve flight data from a Google Sheet using the DataManager.
+2. Update missing IATA codes in the Google Sheet by fetching them from the Flight Search API.
+3. Search for flights for each destination over a specified date range (from tomorrow to six months from today).
+4. Identify the cheapest flight for each destination.
+5. Compare the flight price with the lowest price recorded in the Google Sheet.
+6. If a cheaper flight is found, send an SMS notification with the flight details.
+Note:
+- The script pauses for 2 seconds after updating each IATA code to avoid hitting API rate limits.
+- Ensure that the required API keys and credentials for the Flight Search API, Google Sheets API, and Twilio are properly configured.
+"""
 
 import datetime
 import os
-import pprint
 from flight_data import find_cheapest_flight
 from flight_search import FlightSearch
 from data_manager import DataManager
@@ -36,20 +58,20 @@ for destination in sheet_data:
     destination_code = destination["iataCode"]
     # Get the flight data from the API
     flight_data = flight_search.flight_search(destination_code, tomorrow.strftime("%Y-%m-%d"), six_month_from_today.strftime("%Y-%m-%d"))
-    # print(flight_data)
-
     # Find the cheapest flight
     cheapest_flight = find_cheapest_flight(flight_data)
-    # Print the cheapest flight data
-    # print("the cheapest flight data is:")
-    # pprint.pprint(cheapest_flight.__dict__)
-
-    # Check if the flight is cheaper than the price in the Google Sheet
+    # check if the flight data is valid
+    if cheapest_flight.price == "N/A":
+        print("No flight data found")
+        continue
+    
     if cheapest_flight.price < destination["lowestPrice"]:
         # Send a message with the flight details
         message = f"Low price alert! Only £{cheapest_flight.price} to fly from {cheapest_flight.origin_airport} to {cheapest_flight.destination_airport} from {cheapest_flight.out_date} to {cheapest_flight.return_date}."
         notification_manager.send_message(message)
         print(message)
-    else:
+    elif cheapest_flight.price >= destination["lowestPrice"]:
         print("No cheap flights found.")
+    else:
+        print("Unexpected condition encountered.")
 #     # Uncomment the line below to send a message with the flight details
