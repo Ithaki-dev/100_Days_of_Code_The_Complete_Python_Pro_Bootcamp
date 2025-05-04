@@ -1,6 +1,7 @@
 # This class is for seacrhing flights
 # It uses the Flight Search API to find flight deals
 
+from datetime import datetime, timedelta
 import os
 import json
 from dotenv import load_dotenv
@@ -9,18 +10,13 @@ from pprint import pprint
 
 load_dotenv()
 
-# Global variables for the Flight Search API
-country_code = "SJO"  # Costa Rica
-# currency code for Costa Rica
-currency_code = "USD"  # US Dollar
-
 # Get the environment variables
 FLIGHT_SEARCH_ENDPOINT = os.getenv('FLIGHT_SEARCH_ENDPOINT')
 FLIGHT_SEARCH_API_KEY = os.getenv('FLIGHT_SEARCH_API_KEY')
 FLIGHT_SEARCH_AUTH = os.getenv('FLIGHT_SEARCH_AUTH')
 
 
-# Define FightSearch class
+# Define FlightSearch class
 
 class FlightSearch:
     def __init__(self):
@@ -80,21 +76,28 @@ class FlightSearch:
                     print(f"Could not find IATA code for {city_name}.") 
         return data
     
-    def flight_search(self, destination, departure_date):
+    def flight_search(self, destination, departure_date, return_date):
         access_token = self.get_access_token()
         headers = {
             "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
         }
         params = {
-            "originLocationCode": country_code,
-            "destinationLocationCode": destination,
-            "departureDate": departure_date,
+            "originLocationCode": "SJO",  # Replace with a valid origin IATA code if needed
+            "destinationLocationCode": destination,  # Ensure this is a valid IATA code
+            "departureDate": departure_date,  # Ensure the date format is YYYY-MM-DD
+            "returnDate": return_date,  # Ensure the date format is YYYY-MM-DD
+            "nonStop": "false",  # Allow both non-stop and connecting flights for more results
             "adults": 1,
-            "currencyCode": currency_code,  # Ensure currency code is included
-            "max": 3  # Limit the number of results for testing
+            "currencyCode": "USD",  # Ensure currency code is included
+            "max": 10  # Increase the number of results for testing
         }
-        response = requests.get(f"{self.endpoint}/v2/shopping/flight-offers", headers=headers, params=params)
+        response = requests.get(
+            f"{self.endpoint}/v2/shopping/flight-offers",
+            headers=headers,
+            params=params
+        )
+        response.raise_for_status()  # Raise an error for bad responses
+        
         if response.status_code != 200:
             print(f"Error: {response.status_code}, {response.text}")  # Log detailed error
         # Parse the response
@@ -110,9 +113,16 @@ if __name__ == "__main__":
 
     flight_search = FlightSearch()
     # test the flight search
-    test = flight_search.flight_search("LAX", "2025-06-06")
+    
     # test the get_city_code method
+
+    tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+    six_month_from_today = (datetime.now() + timedelta(days=(6 * 30))).strftime("%Y-%m-%d")
+
+
+    test = flight_search.flight_search("LAX", tomorrow, six_month_from_today)
     print(test)
+
 
 
 
