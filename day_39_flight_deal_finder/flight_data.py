@@ -1,4 +1,3 @@
-# This is the class that handles the flight data and API calls for the Flight Deal Finder project.
 
 import os
 import json
@@ -17,6 +16,25 @@ class FlightData:
 
 
 def find_cheapest_flight(data):
+    """
+    Finds the cheapest flight from the provided flight data.
+    Args:
+        data (dict): A dictionary containing flight information. The dictionary is expected
+                     to have a key 'data' which is a list of flight details. Each flight detail
+                     should include pricing information under 'price' and itinerary details
+                     under 'itineraries'.
+    Returns:
+        FlightData: An instance of the FlightData class containing the details of the cheapest flight.
+                    If no data is provided or no flights are available, a FlightData instance with
+                    "N/A" values is returned.
+    Notes:
+        - The function assumes that the flight data is structured in a specific format, where:
+          - 'price' contains a key 'grandTotal' representing the total price of the flight.
+          - 'itineraries' is a list of flight segments, where each segment contains departure and
+            arrival information, including IATA codes and departure times.
+        - The function extracts the departure and return dates from the first segment of the
+          respective itineraries.
+    """
     # This method is for finding the cheapest flight from the data
 
     # Check if data is None or empty
@@ -48,9 +66,5 @@ def find_cheapest_flight(data):
             out_date = flight["itineraries"][0]["segments"][0]["departure"]["at"].split("T")[0]
             return_date = flight["itineraries"][1]["segments"][0]["departure"]["at"].split("T")[0]
             cheapest_flight = FlightData(lowest_price, origin, destination, out_date, return_date)
-            print(f"Lowest price to {destination} is £{lowest_price}")
     # Return the cheapest flight data
     return cheapest_flight
-
-
-    

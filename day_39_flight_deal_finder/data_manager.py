@@ -20,6 +20,26 @@ SHEETY_BASIC_AUTH = os.getenv('SHEETY_BASIC_AUTH')
 
 # Define the DataManager class
 class DataManager:
+    """
+    DataManager is a class responsible for interacting with a Sheety API to manage data.
+    Attributes:
+        endpoint (str): The base URL of the Sheety API endpoint.
+        auth (str): The authentication token or credentials for the Sheety API.
+        data (dict): A dictionary to store the fetched data from the API.
+        headers (dict): A dictionary containing the headers for API requests, including authorization and content type.
+    Methods:
+        get_data():
+            Fetches data from the Sheety API endpoint and returns the 'prices' data.
+            Returns:
+                list: A list of dictionaries containing the 'prices' data if the request is successful.
+                None: If the request fails, returns None and prints an error message.
+        update_data(data):
+            Updates the Sheety API with the provided data.
+            Args:
+                data (list): A list of dictionaries, where each dictionary contains the data to be updated, including an 'id' key.
+            Returns:
+                None: Prints success or error messages for each update operation.
+    """
     def __init__(self):
         self.endpoint = SHEETY_ENDPOINT
         self.auth = SHEETY_AUTH

@@ -1,6 +1,3 @@
-# This class is for seacrhing flights
-# It uses the Flight Search API to find flight deals
-
 from datetime import datetime, timedelta
 import os
 import json
@@ -19,6 +16,41 @@ FLIGHT_SEARCH_AUTH = os.getenv('FLIGHT_SEARCH_AUTH')
 # Define FlightSearch class
 
 class FlightSearch:
+    """
+    FlightSearch is a class that interacts with a flight search API to retrieve flight information,
+    city IATA codes, and perform flight searches based on user-provided criteria.
+    Attributes:
+        endpoint (str): The base URL for the flight search API.
+        api_key (str): The API key for authenticating requests.
+        auth (str): The client secret for authenticating requests.
+        headers (dict): Default headers for API requests.
+        params (dict): Default parameters for obtaining an access token.
+    Methods:
+        get_access_token():
+            Retrieves an access token from the flight search API for authentication.
+            Returns:
+                str: The access token if successful, None otherwise.
+        get_city_code(city_name):
+            Retrieves the IATA code for a given city.
+            Args:
+                city_name (str): The name of the city to search for.
+            Returns:
+                str: The IATA code of the city if found, None otherwise.
+        add_iata_codes(data):
+            Updates a list of city dictionaries with their corresponding IATA codes.
+            Args:
+                data (list): A list of dictionaries, each containing a 'city' key and an 'iataCode' key.
+            Returns:
+                list: The updated list of dictionaries with IATA codes added.
+        flight_search(destination, departure_date, return_date):
+            Searches for flights based on the provided destination, departure date, and return date.
+            Args:
+                destination (str): The IATA code of the destination city.
+                departure_date (str): The departure date in the format 'YYYY-MM-DD'.
+                return_date (str): The return date in the format 'YYYY-MM-DD'.
+            Returns:
+                dict: The JSON response from the flight search API containing flight offers.
+    """
     def __init__(self):
         self.endpoint = FLIGHT_SEARCH_ENDPOINT
         self.api_key = FLIGHT_SEARCH_API_KEY
@@ -107,23 +139,3 @@ class FlightSearch:
             json.dump(json_data, f, indent=4)
 
         return json_data  # Return the JSON data for further processing
-
-
-if __name__ == "__main__":
-
-    flight_search = FlightSearch()
-    # test the flight search
-    
-    # test the get_city_code method
-
-    tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
-    six_month_from_today = (datetime.now() + timedelta(days=(6 * 30))).strftime("%Y-%m-%d")
-
-
-    test = flight_search.flight_search("LAX", tomorrow, six_month_from_today)
-    print(test)
-
-
-
-
-    

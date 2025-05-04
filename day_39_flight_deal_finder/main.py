@@ -9,12 +9,12 @@ import pprint
 from flight_data import find_cheapest_flight
 from flight_search import FlightSearch
 from data_manager import DataManager
-# from notification_manager import NotificationManager
+from notification_manager import NotificationManager
 
 data_manager = DataManager()
 sheet_data = data_manager.get_data()
 flight_search = FlightSearch()
-# notification_manager = NotificationManager()
+notification_manager = NotificationManager()
 
 # Update the IATA codes in the Google Sheet
 for row in sheet_data:
@@ -41,5 +41,15 @@ for destination in sheet_data:
     # Find the cheapest flight
     cheapest_flight = find_cheapest_flight(flight_data)
     # Print the cheapest flight data
-    print("the cheapest flight data is:")
-    pprint.pprint(cheapest_flight.__dict__)
+    # print("the cheapest flight data is:")
+    # pprint.pprint(cheapest_flight.__dict__)
+
+    # Check if the flight is cheaper than the price in the Google Sheet
+    if cheapest_flight.price < destination["lowestPrice"]:
+        # Send a message with the flight details
+        message = f"Low price alert! Only £{cheapest_flight.price} to fly from {cheapest_flight.origin_airport} to {cheapest_flight.destination_airport} from {cheapest_flight.out_date} to {cheapest_flight.return_date}."
+        notification_manager.send_message(message)
+        print(message)
+    else:
+        print("No cheap flights found.")
+#     # Uncomment the line below to send a message with the flight details
