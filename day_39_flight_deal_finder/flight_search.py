@@ -3,7 +3,6 @@ import os
 import json
 from dotenv import load_dotenv
 import requests
-from pprint import pprint
 
 load_dotenv()
 
@@ -108,7 +107,7 @@ class FlightSearch:
                     print(f"Could not find IATA code for {city_name}.") 
         return data
     
-    def flight_search(self, destination, departure_date, return_date):
+    def flight_search(self, destination, departure_date, return_date, is_direct=True):
         access_token = self.get_access_token()
         headers = {
             "Authorization": f"Bearer {access_token}",
@@ -118,7 +117,7 @@ class FlightSearch:
             "destinationLocationCode": destination,  # Ensure this is a valid IATA code
             "departureDate": departure_date,  # Ensure the date format is YYYY-MM-DD
             "returnDate": return_date,  # Ensure the date format is YYYY-MM-DD
-            "nonStop": "false",  # Allow both non-stop and connecting flights for more results
+            "nonStop": "true" if is_direct else "false",  # Set to true for direct flights only
             "adults": 1,
             "currencyCode": "USD",  # Ensure currency code is included
             "max": 10  # Increase the number of results for testing
