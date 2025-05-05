@@ -38,6 +38,7 @@ from dateutil.relativedelta import relativedelta
 
 data_manager = DataManager()
 sheet_data = data_manager.get_data()
+user_emails = data_manager.get_users()
 flight_search = FlightSearch()
 notification_manager = NotificationManager()
 
@@ -88,4 +89,19 @@ for destination in sheet_data:
         print(f"Cheapest indirect flight price is: ${cheapest_flight.price}")
 
     # ==================== Send notification and emails ====================
-    # Get the email from sheet data
+    # Check if the flight is N/A (not available)
+    if cheapest_flight.price == "N/A":
+        print(f"No flights available for {destination['city']}.")
+        continue
+
+    if int(cheapest_flight.price) < destination["lowestPrice"]:
+        print(f"Price drop! New price: ${cheapest_flight.price}")
+        message = f"Low price alert! Only ${cheapest_flight.price} to fly from {cheapest_flight.origin_airport} to {cheapest_flight.destination_airport}, from {cheapest_flight.out_date} to {cheapest_flight.return_date}."
+        notification_manager.send_message(message)
+
+        # Send email to all users
+        for user in user_emails:
+            notification_manager.send_email(message, user["email"])
+            print(f"Email sent to {user['email']}")
+
+        
