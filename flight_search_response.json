@@ -2,7 +2,7 @@
     "meta": {
         "count": 0,
         "links": {
-            "self": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=SJO&destinationLocationCode=DBN&departureDate=2025-05-04&returnDate=2025-10-30&nonStop=false&adults=1&currencyCode=USD&max=10"
+            "self": "https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=SJO&destinationLocationCode=DBN&departureDate=2025-05-06&returnDate=2025-11-05&nonStop=false&adults=1&currencyCode=USD&max=10"
         }
     },
     "data": []

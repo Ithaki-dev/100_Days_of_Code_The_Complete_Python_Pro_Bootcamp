@@ -107,16 +107,17 @@ class FlightSearch:
                     print(f"Could not find IATA code for {city_name}.") 
         return data
     
-    def flight_search(self, destination, departure_date, return_date, is_direct=True):
+    def flight_search(self, origin_city_code, destination_city_code, from_time, to_time, is_direct=True):
         access_token = self.get_access_token()
+        # print(f"Access token: {access_token}")  # Debugging: Print the access token
         headers = {
             "Authorization": f"Bearer {access_token}",
         }
         params = {
-            "originLocationCode": "SJO",  # Replace with a valid origin IATA code if needed
-            "destinationLocationCode": destination,  # Ensure this is a valid IATA code
-            "departureDate": departure_date,  # Ensure the date format is YYYY-MM-DD
-            "returnDate": return_date,  # Ensure the date format is YYYY-MM-DD
+            "originLocationCode": origin_city_code,  # Use the provided origin city code
+            "destinationLocationCode": destination_city_code,  # Ensure this is a valid IATA code
+            "departureDate": from_time,  # Ensure the date format is YYYY-MM-DD
+            "returnDate": to_time,  # Ensure the date format is YYYY-MM-DD
             "nonStop": "true" if is_direct else "false",  # Set to true for direct flights only
             "adults": 1,
             "currencyCode": "USD",  # Ensure currency code is included
@@ -138,3 +139,14 @@ class FlightSearch:
             json.dump(json_data, f, indent=4)
 
         return json_data  # Return the JSON data for further processing
+    
+if __name__ == "__main__":
+    # test flight search metohd
+    flight_search = FlightSearch()
+    origin_city_code = "SJO"  # Example origin city code
+    destination_city_code = "LAX"  # Example destination city code
+    from_time = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")  # Tomorrow's date
+    to_time = (datetime.now() + timedelta(days=60)).strftime("%Y-%m-%d")  # Two months from now
+    is_direct = True  # Set to True for direct flights only
+    flight_data = flight_search.flight_search(origin_city_code, destination_city_code, from_time, to_time, is_direct)
+    print(flight_data)  # Print the flight data for testing
