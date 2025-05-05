@@ -14,7 +14,6 @@ class FlightData:
         self.out_date = out_date
         self.return_date = return_date
 
-
 def find_cheapest_flight(data):
     """
     Finds the cheapest flight from the provided flight data.
