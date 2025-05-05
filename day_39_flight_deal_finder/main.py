@@ -88,16 +88,4 @@ for destination in sheet_data:
         print(f"Cheapest indirect flight price is: ${cheapest_flight.price}")
 
     # ==================== Send notification and emails ====================
-    # Send notification and email
-    if cheapest_flight.price != "N/A":
-        # Check if the flight price is lower than the price in the Google Sheet
-        if cheapest_flight.price < destination["lowestPrice"]:
-            message = f"Low price alert! Only ${cheapest_flight.price} to fly from {cheapest_flight.origin_airport} to {cheapest_flight.destination_airport}.\n" \
-                      f"Departure: {cheapest_flight.out_date}\nReturn: {cheapest_flight.return_date}\n" \
-                      f"Number of stops: {cheapest_flight.stops}"
-            notification_manager.send_message(message)
-            print(f"Notification sent for {destination['city']}!")
-        else:
-            print(f"No cheaper flight found for {destination['city']}. Current price: ${cheapest_flight.price}, Sheet price: ${destination['lowestPrice']}")
-    else:
-        print(f"No flight data available for {destination['city']}.")
+    # Get the email from sheet data

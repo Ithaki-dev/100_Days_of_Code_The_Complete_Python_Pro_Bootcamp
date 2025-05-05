@@ -13,6 +13,7 @@ load_dotenv()
 
 # Get the environment variables
 SHEETY_ENDPOINT = os.getenv('SHEETY_ENDPOINT')
+SHEETY_ENDPOINT_USERS = os.getenv('SHEETY_ENDPOINT_USERS')
 SHEETY_USERNAME = os.getenv('SHEETY_USERNAME')
 SHEETY_PASSWORD = os.getenv('SHEETY_PASSWORD')
 SHEETY_AUTH = (SHEETY_USERNAME, SHEETY_PASSWORD)
@@ -68,3 +69,23 @@ class DataManager:
             else:
                 print(f"Error updating data for ID: {item['id']}. Status code: {response.status_code}")
         
+    def get_users(self):
+        response = requests.get(f"{SHEETY_ENDPOINT_USERS}", headers=self.headers)
+        if response.status_code == 200:
+            self.data = response.json()
+            # get the data from users
+            user_sheet_data = self.data['users']
+            return user_sheet_data
+        else:
+            print(f"Error: {response.status_code}")
+            return None
+        
+if __name__ == "__main__":
+    # test get_users method
+    data_manager = DataManager()
+    users = data_manager.get_users()
+    if users:
+        for user in users:
+            print(user['email'])
+    else:
+        print("No users found.")
