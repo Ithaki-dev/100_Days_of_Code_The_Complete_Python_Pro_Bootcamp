@@ -9,16 +9,28 @@ yc_website = response.text
 soup = BeautifulSoup(yc_website, "html.parser")
 
 
-article_tag = soup.find(name="span", class_="titleline")
-if article_tag:
-	article_text = article_tag.getText()
-	article_link = article_tag.find("a").get("href")
-	article_score = soup.find(name="span", class_="score")
-	article_score_number = article_score.getText().split()[0] if article_score else "No score available"
+article = soup.find_all(name="span", class_="titleline")
+
+if article:
+	article_text = []
+	article_link = []
+	article_score_number = []
+	for tag in article:
+		article_text.append(tag.getText())
+		link_tag = tag.find("a")
+		article_link.append(link_tag.get("href") if link_tag else "No link available")
+		article_score = tag.find_next(name="span", class_="score")
+		article_score_number.append(int(article_score.getText().split()[0] if article_score else "0"))
 	
-	print(article_text)
-	print(article_link)
-	print(article_score_number)
+	# print(article_text)
+	# print(article_link)
+	# print(article_score_number)
+	# Finding the article with the highest score
+	max_score = max(article_score_number)
+	max_index = article_score_number.index(max_score)
+	print(f"Article with the highest score: {article_text[max_index]}, with {max_score} points.")
+
+    
 else:
 	print("No article found with the specified class.")
 
