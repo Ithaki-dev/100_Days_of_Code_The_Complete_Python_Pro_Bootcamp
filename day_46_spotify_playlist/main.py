@@ -4,6 +4,16 @@
 import os
 import requests
 from bs4 import BeautifulSoup
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+from dotenv import load_dotenv
+# Load environment variables from .env file
+load_dotenv()
+
+# Set up Spotify API credentials
+SPOTIFY_CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID")
+SPOTIFY_CLIENT_SECRET = os.environ.get("SPOTIFY_CLIENT_SECRET")
+print(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET)
 
 #year = input("Which year do you want to travel to? Type the date in this format YYYY-MM-DD: ")
 url = "https://www.billboard.com/charts/hot-100/2014-05-17/"
@@ -37,3 +47,16 @@ for tag in songs:
         continue
     list_of_songs.append(song_name.getText().strip())
 
+# Conect to Spotify API
+auth_manager = SpotifyClientCredentials( 
+    client_id=SPOTIFY_CLIENT_ID,
+    client_secret=SPOTIFY_CLIENT_SECRET,
+)
+sp = spotipy.Spotify(auth_manager=auth_manager)
+
+playlists = sp.user_playlists("spotify")
+for playlist in playlists["items"]:
+    print(playlist["name"])
+    if playlist["name"] == "Top 100 Songs":
+        print("Playlist already exists")
+        exit()
