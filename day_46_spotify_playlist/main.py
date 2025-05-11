@@ -5,10 +5,13 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
+
+# Current path
+current_path = os.path.dirname(os.path.abspath(__file__))
 
 # Set up Spotify API credentials
 SPOTIFY_CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID")
@@ -47,16 +50,17 @@ for tag in songs:
         continue
     list_of_songs.append(song_name.getText().strip())
 
-# Conect to Spotify API
-auth_manager = SpotifyClientCredentials( 
+# Connect to Spotify API
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     client_id=SPOTIFY_CLIENT_ID,
     client_secret=SPOTIFY_CLIENT_SECRET,
-)
-sp = spotipy.Spotify(auth_manager=auth_manager)
-
-playlists = sp.user_playlists("spotify")
-for playlist in playlists["items"]:
-    print(playlist["name"])
-    if playlist["name"] == "Top 100 Songs":
-        print("Playlist already exists")
-        exit()
+    redirect_uri="https://example.com/callback",
+    scope="playlist-modify-private" 
+))
+# Check if the user is authenticated
+if not sp:
+    print("Error: Unable to authenticate with Spotify API")
+    exit()
+else:
+    print("Successfully authenticated with Spotify API")
+    print("User ID:", sp.me()["id"])
