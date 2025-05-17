@@ -1,3 +1,19 @@
+"""This script automates playing the Cookie Clicker game using Selenium WebDriver.
+Features:
+- Automatically clicks the main cookie at regular intervals.
+- Monitors the current number of cookies and available upgrades (Cursor, Grandma, Factory).
+- Purchases the most expensive affordable upgrade in priority order: Factory > Grandma > Cursor.
+Functions:
+- update_elements(): Retrieves the current cookie count, upgrade buttons, and their prices.
+- click_cookie(): Clicks the main cookie button.
+Execution:
+- Continuously clicks the cookie and attempts to purchase upgrades as soon as enough cookies are available.
+- Prints the current cookie count and logs purchases to the console.
+Requirements:
+- Selenium WebDriver for Firefox must be installed and configured.
+- Internet connection to access the Cookie Clicker game.
+Note:
+- The script is intended for educational and automation practice purposes."""
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,6 +28,19 @@ driver.get("https://orteil.dashnet.org/experiments/cookie/")
 
 
 def update_elements():
+    """
+    Updates and retrieves the current game elements and their prices from the Cookie Clicker game using Selenium.
+
+    Returns:
+        tuple: A tuple containing:
+            - cursor_1_price (int): The price of the Cursor upgrade.
+            - grandma_2_price (int): The price of the Grandma upgrade.
+            - factory_3_price (int): The price of the Factory upgrade.
+            - cursor_1 (WebElement): The WebElement for the Cursor upgrade button.
+            - grandma_2 (WebElement): The WebElement for the Grandma upgrade button.
+            - factory_3 (WebElement): The WebElement for the Factory upgrade button.
+            - cookie_count (int): The current number of cookies available.
+    """
     cookie_count = driver.find_element(By.ID, "money").text
     # Remove the commas from the cookie count
     cookie_count = cookie_count.replace(",", "")
@@ -29,12 +58,15 @@ def update_elements():
     return cursor_1_price, grandma_2_price, factory_3_price,cursor_1, grandma_2, factory_3,cookie_count
 
 
-# make a click every half second
+# make the most click per second
+
 def click_cookie():
-    for i in range(300):
-        cookie_button = driver.find_element(By.ID, "cookie")
-        cookie_button.click()
-    time.sleep(0.2)
+    # Find the cookie button
+    cookie_button = driver.find_element(By.ID, "cookie")
+    # Click the cookie button
+    cookie_button.click()
+    # Wait for 0.5 seconds
+    time.sleep(0.5)
 
 if __name__ == "__main__":
     # Click the cookie button every 0.5 seconds
