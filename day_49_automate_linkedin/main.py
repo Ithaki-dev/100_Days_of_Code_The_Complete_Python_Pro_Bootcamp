@@ -35,9 +35,9 @@ sign_in_button.click()
 sleep(5)  # seconds
 # Find the email and password input fields and enter your credentials
 email_input = driver.find_element(By.ID, 'username')
-email_input.send_keys("jincho1995@gmail.com")  # Replace with your email
+email_input.send_keys("your email")  # Replace with your email
 password_input = driver.find_element(By.ID, 'password')
-password_input.send_keys("c0n547udr7")  # Replace with your password
+password_input.send_keys("your password")  # Replace with your password
 password_input.send_keys(Keys.RETURN)
 # Wait for the page to load
 sleep(5)  # seconds
