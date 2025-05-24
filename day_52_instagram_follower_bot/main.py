@@ -1,9 +1,30 @@
+"""
+This script automates the process of following Instagram users who follow a specified account using Selenium WebDriver.
+Classes:
+    InstagramFollowerBot:
+        Automates Instagram login, navigates to a similar account's followers list, and follows users.
+        Methods:
+            __init__(self, similar_account):
+                Initializes the bot with the target similar account and sets up the Firefox WebDriver.
+            login(self):
+                Logs into Instagram using the provided USER_NAME and PASSWORD credentials.
+            find_followers(self):
+                Navigates to the similar account's profile, opens the followers list, and scrolls through the followers pop-up to load more users.
+            follow_users(self):
+                Finds and clicks the "Follow" buttons for users in the followers pop-up, attempting to follow them.
+Constants:
+    USER_NAME (str): Instagram username for login.
+    PASSWORD (str): Instagram password for login.
+    SIMILAR_ACCOUNT (str): Instagram handle of the account whose followers will be targeted.
+Usage:
+    Instantiate the InstagramFollowerBot with the target account, log in, find followers, and follow users.
+"""
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-USER_NAME = "username"
-PASSWORD = "password"
+USER_NAME = "your_username"  # Replace with your Instagram username
+PASSWORD = "your_password"  # Replace with your Instagram password
 SIMILAR_ACCOUNT = "chefsteps"
 
 
