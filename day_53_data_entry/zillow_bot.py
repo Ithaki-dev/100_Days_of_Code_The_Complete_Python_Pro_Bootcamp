@@ -5,8 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 
-GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfntL5JT4hTnPyHU1QzKG8ruawNa-EZ2_10t0Mih43CbPOHAg/viewform?usp=header"
-
+GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfntL5JT4hTnPyHU1QzKG8ruawNa-EZ2_10t0Mih43CbPOHAg/viewform?usp=dialog"
 def find_rentals():
     """
     Fetches rental listings from Zillow and returns a list of dictionaries
@@ -53,7 +52,40 @@ def find_rentals():
   
     return price_list, address_list, link_list
 
+def scrap_to_google_form(address, price, link):
+    # Create a new instance of the Firefox driver
+    driver = webdriver.Firefox()
+    # Navigate to the LinkedIn jobs page
+    driver.get(GOOGLE_FORM_URL)
+    # Wait for the page to load
+    sleep(2)
+
+    # Fill out the form fields
+    address_field = driver.find_element(By.XPATH, '//*[@id="mG61Hd"]/div[2]/div/div[2]/div[1]/div/div/div[2]/div/div[1]/div[2]/textarea')
+    address_field.send_keys(address)
+
+    price_field = driver.find_element(By.XPATH, '//*[@id="mG61Hd"]/div[2]/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[1]/input')
+    price_field.send_keys(price)
+
+    link_field = driver.find_element(By.XPATH, '//*[@id="mG61Hd"]/div[2]/div/div[2]/div[3]/div/div/div[2]/div/div[1]/div[2]/textarea')
+    link_field.send_keys(link)
+
+    # Submit the form
+    submit_button = driver.find_element(By.XPATH, '/html/body/div/div[2]/form/div[2]/div/div[3]/div[1]/div[1]/div/span/span')
+    # Note: The XPath for the submit button may vary; adjust it if necessary.
+    submit_button.click()
+
+    # Close the browser
+    driver.quit()
+
+def submit_rentals_to_google_form():
+    """
+    Submits the rental listings to the Google Form.
+    """
+    price_list, address_list, link_list = find_rentals()
+    for i in range(len(price_list)):
+        scrap_to_google_form(address_list[i], price_list[i], link_list[i])
+        sleep(2)  # Wait for 2 seconds before submitting the next form
 
 if __name__ == "__main__":
-    rentals = find_rentals()
-    pprint(rentals)
+    submit_rentals_to_google_form()
