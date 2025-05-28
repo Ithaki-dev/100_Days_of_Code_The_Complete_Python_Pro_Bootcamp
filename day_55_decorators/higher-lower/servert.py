@@ -1,3 +1,22 @@
+"""
+This module implements a simple "Higher-Lower" number guessing game using Flask.
+Modules:
+    - random: For generating random numbers.
+    - flask: For creating the web application.
+    - style_text: Contains the Stalying class for styling HTML responses.
+Global Variables:
+    - number (int): The current random number to be guessed, between 0 and 9.
+Decorators:
+    - generate_random_number: Regenerates the random number each time the decorated function is called.
+    - Stalying.bold, Stalying.underline, Stalying.center: Style the HTML output of the home route.
+Flask Routes:
+    - '/': Home page. Welcomes the user and prompts to guess a number.
+    - '/higher': Informs the user to guess a higher number.
+    - '/lower': Informs the user to guess a lower number.
+    - '/guess/<int:guess>': Checks the user's guess and responds accordingly.
+Usage:
+    Run this script to start the Flask web server and play the game in a browser.
+"""
 import random
 from flask import Flask
 from style_text import Stalying
