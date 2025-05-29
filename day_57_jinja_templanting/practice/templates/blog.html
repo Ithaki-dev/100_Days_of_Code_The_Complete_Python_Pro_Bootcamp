@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Blog Posts</title>
+</head>
+<body style="font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 0;">
+    <div style="max-width: 700px; margin: 40px auto; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-radius: 8px; padding: 32px;">
+        <h1 style="text-align: center; color: #333; margin-bottom: 32px;">Blog Posts</h1>
+        {% for blog in posts %}
+            <article style="margin-bottom: 40px;">
+                <h2 style="color: #2c3e50; margin-bottom: 8px;">{{ blog.title }}</h2>
+                <h4 style="color: #888; margin-top: 0; margin-bottom: 16px;">{{ blog.subtitle }}</h4>
+                <p style="color: #444; line-height: 1.7;">{{ blog.body }}</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;">
+            </article>
+        {% else %}
+            <p style="text-align: center; color: #888;">No blog posts found.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
