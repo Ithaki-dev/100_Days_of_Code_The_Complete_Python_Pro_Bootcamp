@@ -5,7 +5,7 @@ This project is a simple blog website built with Flask and styled using the Star
 ## Features
 - Home page listing all blog posts
 - Individual post pages
-- About and Contact pages
+- About and Contact pages (Contact page now supports form submission and email sending)
 - Responsive design using Bootstrap
 - Blog post data fetched from an external API (npoint.io)
 
@@ -30,24 +30,31 @@ day_59_blog/
 - The home page (`/`) displays a list of blog posts with titles and subtitles.
 - Clicking a post title navigates to the individual post page (`/post/<id>`).
 - The About and Contact pages are static informational pages.
+- The Contact page supports form submission. When a user submits the form, the server sends an email with the submitted information using SMTP.
 
 ## Getting Started
-1. **Install dependencies:**
+1. **Create a virtual environment (recommended):**
+   ```powershell
+   python -m venv venv
+   .\venv\Scripts\activate
+   ```
+2. **Install dependencies:**
    Ensure you have Python 3 and Flask installed. You may also need `requests`.
    ```powershell
    pip install flask requests
    ```
-2. **Run the server:**
+3. **Run the server:**
    ```powershell
    cd day_59_blog/startbootstrap-clean-blog-gh-pages
    python server.py
    ```
-3. **Open your browser:**
+4. **Open your browser:**
    Visit `http://127.0.0.1:5000/` to view the blog.
 
 ## Customization
 - To change the blog posts, update the data at the npoint.io API or modify the `get_posts()` function to use local data.
 - You can edit the HTML templates in the `templates/` folder to change the look and feel.
+- To enable email sending from the contact form, update the `my_email` and `my_password` variables in `server.py` with your own email credentials.
 
 ## Credits
 - [StartBootstrap Clean Blog](https://startbootstrap.com/theme/clean-blog) for the theme

@@ -5,8 +5,8 @@ import smtplib
 app = Flask(__name__)
 
 url_api = 'https://www.npoint.io/docs/3083c920e6d9c3d71c94'
-my_email = "jincho1995@gmail.com"
-my_password = "xihewoxmvkwpegkq"  # Replace with your actual password
+my_email = "youremail@gmail.com"
+my_password = "youremailpassword"  # Replace with your actual password
 
 # get the post infromation from the request
 def get_posts():
