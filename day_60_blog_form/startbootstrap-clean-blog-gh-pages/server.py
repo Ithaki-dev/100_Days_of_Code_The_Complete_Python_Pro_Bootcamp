@@ -5,8 +5,8 @@ import smtplib
 app = Flask(__name__)
 
 url_api = 'https://www.npoint.io/docs/3083c920e6d9c3d71c94'
-my_email = "jincho1995@gmail.com"
-my_password = "xihewoxmvkwpegkq"  # Replace with your actual password
+my_email = "your@gmail.com"
+my_password = "yourpassword"  # Replace with your actual password
 
 # get the post infromation from the request
 def get_posts():
@@ -49,7 +49,7 @@ def contact_post():
             email_message = (f"Subject:New Contact Form Submission\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage: {message}").encode('utf-8')
             connection.sendmail(
                 from_addr=my_email,
-                to_addrs="rquesadaqq@outlook.com",
+                to_addrs="yoursender@outlook.com",
                 msg=email_message
             )
         print("Email sent successfully!")
