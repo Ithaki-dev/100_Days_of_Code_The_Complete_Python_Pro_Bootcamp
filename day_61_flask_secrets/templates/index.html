@@ -2,6 +2,10 @@
 <html>
   <head>
     <title>Secrets</title>
+    {% block styling %}
+                <!-- Bootstrap CSS -->
+            {{ bootstrap.load_css() }}
+    {% endblock %}
   </head>
   <body>
     <div class="jumbotron">
