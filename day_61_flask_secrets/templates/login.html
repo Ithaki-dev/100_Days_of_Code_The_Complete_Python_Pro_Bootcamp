@@ -8,6 +8,19 @@
         <div class="container">
 		<h1>Login</h1>
         <!-- This is where our form will go. -->
-        </div>
+		<form method="POST" action="{{ url_for('login') }}">
+			<div class="form-group">
+				{{ form.csrf_token }}
+				<!-- CSRF token for security -->
+				<!-- This is a security measure to prevent CSRF attacks. -->
+				 {{ form.username.label }} {{ form.username(size=32) }}
+				<!-- Label for the username field -->
+							</div>
+			<div class="form-group">
+				{{ form.password.label }} {{ form.password(size=32) }}
+				<!-- Label for the password field -->
+				</div>
+			<button type="submit" class="btn btn-primary">Login</button>
+		</form>
 	</body>
 </html>
