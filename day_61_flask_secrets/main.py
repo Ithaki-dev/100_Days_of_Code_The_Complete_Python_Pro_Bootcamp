@@ -1,6 +1,6 @@
 from flask import Flask, redirect, render_template, request, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 
 '''
@@ -21,8 +21,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'  # Replace with your actual secret key
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username = StringField(label='Username', validators=[DataRequired()])
+    password = PasswordField(label='Password', validators=[DataRequired()])
+    submit = SubmitField(label='Submit')
 
 @app.route("/")
 def home():

@@ -1,26 +1,34 @@
 <!DOCTYPE HTML>
-
 <html>
 	<head>
 		<title>Login</title>
 	</head>
 	<body>
-        <div class="container">
-		<h1>Login</h1>
-        <!-- This is where our form will go. -->
-		<form method="POST" action="{{ url_for('login') }}">
-			<div class="form-group">
-				{{ form.csrf_token }}
-				<!-- CSRF token for security -->
-				<!-- This is a security measure to prevent CSRF attacks. -->
-				 {{ form.username.label }} {{ form.username(size=32) }}
-				<!-- Label for the username field -->
-							</div>
-			<div class="form-group">
-				{{ form.password.label }} {{ form.password(size=32) }}
-				<!-- Label for the password field -->
+		<div class="container">
+			<h1>Login</h1>
+			<!-- This is where our form will go. -->
+			<form method="POST" action="{{ url_for('login') }}">
+				<div class="form-group">
+					{{ form.csrf_token }}
+					<!-- CSRF token for security -->
+					<!-- This is a security measure to prevent CSRF attacks. -->
+					{{ form.username.label }} {{ form.username(size=32) }}
+					<!-- Label for the username field -->
+					{% for err in form.username.errors %}
+					<div class="alert alert-danger">{{ err }}</div>
+					{% endfor %}
 				</div>
-			<button type="submit" class="btn btn-primary">Login</button>
-		</form>
+				<br>
+				<div class="form-group">
+					{{ form.password.label }} {{ form.password(size=32) }}
+					<!-- Label for the password field -->
+					{% for err in form.password.errors %}
+					<div class="alert alert-danger">{{ err }}</div>
+					{% endfor %}
+				</div>
+				<br>
+				{{ form.submit(class="btn btn-primary") }}
+			</form>
+		</div>
 	</body>
 </html>
