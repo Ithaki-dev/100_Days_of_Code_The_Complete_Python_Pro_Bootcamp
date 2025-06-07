@@ -13,9 +13,23 @@
           <!-- This is where you will write the code to render a Bootstrap 
           Table that contains all the information from the 
           cafe-data.csv file. -->
+          <tbody>
+            {% for rows in cafes %}
+            <tr>
+              <td>{{ rows[0] }}</td>
+              <td>{{ rows[1] }}</td>
+              <td>{{ rows[2] }}</td>
+              <td>{{ rows[3] }}</td>
+              <td>{{ rows[4] }}</td>
+              <td>{{ rows[5] }}</td>
+              <td>{{ rows[6] }}</td>
+              <td>{{ rows[7] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
   	  </table>
 
-      <p><a href="#">Return to index page</a></p>
+      <p><a href="{{ url_for('home') }}">Return to index page</a></p>
 
     </div>
   </div>
