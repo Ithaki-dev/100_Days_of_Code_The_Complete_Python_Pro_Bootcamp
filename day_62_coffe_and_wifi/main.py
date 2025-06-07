@@ -31,35 +31,30 @@ class CafeForm(FlaskForm):
     open_time = StringField('Open time', validators=[DataRequired()])
     closing_time = StringField('Closing time', validators=[DataRequired()])
     coffee_rating = SelectField('Coffee rating (1-5)', validators=[DataRequired()], choices=[
+        ('✘'),
         ('☕️'),
         ('☕️☕️'),
         ('☕️☕️☕️'),
         ('☕️☕️☕️☕️'),
         ('☕️☕️☕️☕️☕️')
-    ])
+    ], default='☕️')
     wifi_rating = SelectField('Wifi rating (1-5)', validators=[DataRequired()], choices=[
+        ('✘'),
         ('💪'),
         ('💪💪'),
         ('💪💪💪'),
         ('💪💪💪💪'),
         ('💪💪💪💪💪')
-    ])
+    ], default='💪')
     power_outlet_rating = SelectField('Power outlet rating (1-5)', validators=[DataRequired()], choices=[
+        ('✘'),
         ('🔌'),
         ('🔌🔌'),
         ('🔌🔌🔌'),
         ('🔌🔌🔌🔌'),
         ('🔌🔌🔌🔌🔌')
-    ])
+    ], default='🔌')
     submit = SubmitField('Add Cafe')
-
-# Exercise:
-# add: Location URL, open time, closing time, coffee rating, wifi rating, power outlet rating fields
-# make coffee/wifi/power a select element with choice of 0 to 5.
-#e.g. You could use emojis ☕️/💪/✘/🔌
-# make all fields required except submit
-# use a validator to check that the URL field has a URL entered.
-# ---------------------------------------------------------------------------
 
 
 # all Flask routes below
@@ -71,9 +66,7 @@ def home():
 @app.route('/add' , methods=['GET', 'POST'])
 def add_cafe():
     form = CafeForm()    
-    # Exercise:
-    # Make the form write a new row into cafe-data.csv
-    # with   if form.validate_on_submit()
+
     if form.validate_on_submit():
         cafe_name = form.cafe.data
         location_url = form.location_url.data

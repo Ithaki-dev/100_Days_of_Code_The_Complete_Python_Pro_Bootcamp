@@ -10,14 +10,22 @@
       <h1>All Cafes</h1>
 
 	  <table class="table table-dark table-striped table-hover">
-          <!-- This is where you will write the code to render a Bootstrap 
-          Table that contains all the information from the 
-          cafe-data.csv file. -->
+          <thead>
+            <tr>
+              <th scope="col">Cafe Name</th>
+              <th scope="col">Location</th>
+              <th scope="col">Open Time</th>
+              <th scope="col">Closing Time</th>
+              <th scope="col">Coffee Rating</th>
+              <th scope="col">Wifi Rating</th>
+              <th scope="col">Power Outlet Rating</th>
+            </tr>
+          </thead>
           <tbody>
             {% for rows in cafes %}
             <tr>
               <td>{{ rows[0] }}</td>
-              <td>{{ rows[1] }}</td>
+              <td><a href="{{ rows[1] }}">Google Maps</a></td>
               <td>{{ rows[2] }}</td>
               <td>{{ rows[3] }}</td>
               <td>{{ rows[4] }}</td>
