@@ -38,6 +38,11 @@ all_books = []
 
 @app.route('/')
 def home():
+    with app.app_context():
+        # Query all books from the database
+        all_books = db.session.query(Book).all()
+        # Convert the SQLAlchemy objects to dictionaries for rendering
+        all_books = [{"title": book.title, "author": book.author, "rating": book.rating} for book in all_books]
     return render_template("index.html", books=all_books)
 
 
