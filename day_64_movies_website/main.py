@@ -1,3 +1,4 @@
+from pprint import pprint
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
@@ -26,6 +27,15 @@ This will install the packages from requirements.txt for this project.
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
+
+# API URL and headers for The Movie Database (TMDB)
+url = "https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1"
+access_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmM2EwMThhNTZlYThmNDY0YTg4ZGM3OTM2N2NjNTQzMyIsIm5iZiI6MTc0OTkzNDU5OC43NzEwMDAxLCJzdWIiOiI2ODRkZTIwNmI1MThkZmRjYjIzZGY3YTMiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.jq4k49_6XxLzkSmxcRau9kK3zJ-9h9f8D28PQQnwqhw"
+
+headers = {
+    "accept": "application/json",
+    "Authorization": "Bearer " + access_token
+}
 
 # CREATE DB
 # Configure the SQLite database URI
@@ -73,6 +83,10 @@ class MovieForm(FlaskForm):
     img_url = StringField("Image URL", validators=[DataRequired()])
     submit = SubmitField("Add Movie")
 
+class AddMovieForm(FlaskForm):
+    title = StringField("Movie Title", validators=[DataRequired()])
+    submit = SubmitField("Add Movie")
+
 
 @app.route("/")
 def home():
@@ -87,14 +101,13 @@ def home():
 
 @app.route("/edit/<int:movie_id>", methods=["GET", "POST"])
 def edit_movie(movie_id):
-    form = MovieForm()
     with app.app_context():
         movie = db.session.query(Movie).filter(Movie.id == movie_id).first()
-        if request.method == "POST":
+        form = MovieForm(obj=movie)
+        if form.validate_on_submit():
             form.populate_obj(movie)
             db.session.commit()
             return redirect(url_for("home"))
-        
     return render_template("edit.html", form=form)
 
 @app.route("/delete/<int:movie_id>")
@@ -108,8 +121,41 @@ def delete_movie(movie_id):
 
 @app.route("/add", methods=["GET", "POST"])
 def add_movie():
+    form = AddMovieForm()
+    if form.validate_on_submit():
+        movie_title = form.title.data
+        params = {
+            "query": movie_title,
+            "include_adult": "false",
+            "language": "en-US",
+            "page": 1
+        }
+        response = requests.get(url, headers=headers, params=params)
+        data = response.json()
+        movies = data.get("results", [])
+        # pprint(movies)
+        for movie in movies:
+            #  Add the movie to a dictionary to pass to the template
+            dict_movie = {
+                "title": movie.get("title"),
+                "year": movie.get("release_date", "").split("-")[0],
+                "description": movie.get("overview"),
+                "rating": movie.get("vote_average"),
+                "ranking": 0,  # Placeholder for ranking
+                "review": "",  # Placeholder for review
+                "img_url": f"https://image.tmdb.org/t/p/w500{movie.get('poster_path')}",
+                "id": movie.get("id")  # Assuming the ID is available in the response
+            }
+        #  Print the movie dictionary for debugging
+          
+        pprint(dict_movie)
+        if dict_movie:
+            return render_template("select.html", movies=[dict_movie])
+        else:
+            return print("No movies found with that title.")
+    return render_template("add.html", form=form)
 
-    return render_template("add.html")
+
 
 
 if __name__ == '__main__':
