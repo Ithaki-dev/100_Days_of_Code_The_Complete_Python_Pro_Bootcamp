@@ -31,7 +31,7 @@ Bootstrap5(app)
 # API URL and headers for The Movie Database (TMDB)
 url = "https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1"
 access_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmM2EwMThhNTZlYThmNDY0YTg4ZGM3OTM2N2NjNTQzMyIsIm5iZiI6MTc0OTkzNDU5OC43NzEwMDAxLCJzdWIiOiI2ODRkZTIwNmI1MThkZmRjYjIzZGY3YTMiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.jq4k49_6XxLzkSmxcRau9kK3zJ-9h9f8D28PQQnwqhw"
-
+api_key = "f3a018a56ea8f464a88dc79367cc5433"
 headers = {
     "accept": "application/json",
     "Authorization": "Bearer " + access_token
@@ -133,28 +133,57 @@ def add_movie():
         response = requests.get(url, headers=headers, params=params)
         data = response.json()
         movies = data.get("results", [])
+        dictionary_movies = []
         # pprint(movies)
-        for movie in movies:
-            #  Add the movie to a dictionary to pass to the template
-            dict_movie = {
-                "title": movie.get("title"),
-                "year": movie.get("release_date", "").split("-")[0],
-                "description": movie.get("overview"),
-                "rating": movie.get("vote_average"),
-                "ranking": 0,  # Placeholder for ranking
-                "review": "",  # Placeholder for review
-                "img_url": f"https://image.tmdb.org/t/p/w500{movie.get('poster_path')}",
-                "id": movie.get("id")  # Assuming the ID is available in the response
-            }
+        # for movie in movies:
+        #     new_movie = Movie(
+        #         id=movie.get("id"),
+        #         title=movie.get("title"),
+        #         year=movie.get("release_date", "").split("-")[0] if movie.get("release_date") else "Unknown",
+        #         description=movie.get("overview", "No description available."),
+        #         rating=movie.get("vote_average", 0.0),
+        #         ranking=0,  # Default ranking, can be updated later
+        #         review="",  # Default review, can be updated later
+        #         img_url=f"https://image.tmdb.org/t/p/w500{movie.get('poster_path', '')}"
+        #     )
+        #     # Add the movie to the dictionary list
+        #     dictionary_movies.append(new_movie)
+
+
         #  Print the movie dictionary for debugging
-          
-        pprint(dict_movie)
-        if dict_movie:
-            return render_template("select.html", movies=[dict_movie])
+        #pprint(movies)
+        if movies:
+            return render_template("select.html", movies=movies)
         else:
             return print("No movies found with that title.")
     return render_template("add.html", form=form)
 
+@app.route("/find/<movie_id>")
+def find_movie(movie_id):
+    print(movie_id)
+    if movie_id:
+        movie_api_url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={api_key}'
+        #The language parameter is optional, if you were making the website for a different audience
+        #e.g. Hindi speakers then you might choose "hi-IN"
+        response = requests.get(movie_api_url)
+        data = response.json()
+        pprint(data)
+        new_movie = Movie(
+            id=data["id"],
+            title=data["title"],
+            #The data in release_date includes month and day, we will want to get rid of.
+            year=data["release_date"].split("-")[0],
+            rating=data["vote_average"],
+            ranking=0,  # Default ranking, can be updated later
+            review="",  # Default review, can be updated later
+            img_url=f"https://image.tmdb.org/t/p/w500{data['poster_path']}",
+            description=data["overview"]
+        )
+        db.session.add(new_movie)
+        db.session.commit()
+        return redirect(url_for("home"))
+    return "Movie not found", 404
+    
 
 
 
