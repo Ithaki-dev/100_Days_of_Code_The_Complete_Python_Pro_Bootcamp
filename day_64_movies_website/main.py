@@ -1,4 +1,35 @@
-from pprint import pprint
+
+"""
+A Flask web application for managing a personal movie collection using a SQLite database.
+Features include adding, editing, deleting, and displaying movies, as well as searching for movies using The Movie Database (TMDB) API.
+Modules and Libraries:
+- Flask: Web framework for routing and rendering templates.
+- Flask-Bootstrap: For integrating Bootstrap styles.
+- Flask-SQLAlchemy: ORM for database management.
+- SQLAlchemy: Database schema definitions.
+- Flask-WTF & WTForms: For form handling and validation.
+- Requests: For making HTTP requests to TMDB API.
+- OS: For file path management.
+Configuration:
+- Uses a SQLite database stored in the 'instance' directory.
+- Requires TMDB API key and access token for movie search functionality.
+Database Model:
+- Movie: Stores movie details such as title, year, description, rating, ranking, review, and image URL.
+Forms:
+- MovieForm: For editing movie details.
+- AddMovieForm: For searching and adding new movies.
+Routes:
+- '/' (home): Displays all movies in the database.
+- '/edit/<int:movie_id>': Edit details of a specific movie.
+- '/delete/<int:movie_id>': Delete a movie from the database.
+- '/add': Search for a movie by title using TMDB API and select from results.
+- '/find/<movie_id>': Fetches movie details from TMDB and adds it to the database.
+Usage:
+- Run the script to start the Flask development server.
+- Access the web interface to manage the movie collection.
+Note:
+- Replace 'your_access_token_here' and 'your_api_key_here' with valid TMDB credentials.
+"""
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
@@ -11,18 +42,7 @@ import requests
 import os
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
-'''
-Red underlines? Install the required packages first: 
-Open the Terminal in PyCharm (bottom left). 
 
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from requirements.txt for this project.
-'''
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -30,8 +50,8 @@ Bootstrap5(app)
 
 # API URL and headers for The Movie Database (TMDB)
 url = "https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1"
-access_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmM2EwMThhNTZlYThmNDY0YTg4ZGM3OTM2N2NjNTQzMyIsIm5iZiI6MTc0OTkzNDU5OC43NzEwMDAxLCJzdWIiOiI2ODRkZTIwNmI1MThkZmRjYjIzZGY3YTMiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.jq4k49_6XxLzkSmxcRau9kK3zJ-9h9f8D28PQQnwqhw"
-api_key = "f3a018a56ea8f464a88dc79367cc5433"
+access_token = "your_access_token_here"  # Replace with your actual access token
+api_key = "your_api_key_here"  # Replace with your actual API key
 headers = {
     "accept": "application/json",
     "Authorization": "Bearer " + access_token
@@ -57,21 +77,8 @@ class Movie(db.Model):
     review = mapped_column(String(500), nullable=True)
     img_url = mapped_column(String(500), nullable=False)
 # Create the database and tables if they don't exist
-with app.app_context():
-    db.create_all()
-    #  Create a sample movie if the table is empty
-#     second_movie = Movie(
-#     title="Avatar The Way of Water",
-#     year=2022,
-#     description="Set more than a decade after the events of the first film, learn the story of the Sully family (Jake, Neytiri, and their kids), the trouble that follows them, the lengths they go to keep each other safe, the battles they fight to stay alive, and the tragedies they endure.",
-#     rating=7.3,
-#     ranking=9,
-#     review="I liked the water.",
-#     img_url="https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
-# )
-
-#     db.session.add(second_movie)
-#     db.session.commit()
+# with app.app_context():
+#     db.create_all()
 
 class MovieForm(FlaskForm):
     title = StringField("Movie Title", validators=[DataRequired()])
@@ -133,25 +140,6 @@ def add_movie():
         response = requests.get(url, headers=headers, params=params)
         data = response.json()
         movies = data.get("results", [])
-        dictionary_movies = []
-        # pprint(movies)
-        # for movie in movies:
-        #     new_movie = Movie(
-        #         id=movie.get("id"),
-        #         title=movie.get("title"),
-        #         year=movie.get("release_date", "").split("-")[0] if movie.get("release_date") else "Unknown",
-        #         description=movie.get("overview", "No description available."),
-        #         rating=movie.get("vote_average", 0.0),
-        #         ranking=0,  # Default ranking, can be updated later
-        #         review="",  # Default review, can be updated later
-        #         img_url=f"https://image.tmdb.org/t/p/w500{movie.get('poster_path', '')}"
-        #     )
-        #     # Add the movie to the dictionary list
-        #     dictionary_movies.append(new_movie)
-
-
-        #  Print the movie dictionary for debugging
-        #pprint(movies)
         if movies:
             return render_template("select.html", movies=movies)
         else:
@@ -163,15 +151,11 @@ def find_movie(movie_id):
     print(movie_id)
     if movie_id:
         movie_api_url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={api_key}'
-        #The language parameter is optional, if you were making the website for a different audience
-        #e.g. Hindi speakers then you might choose "hi-IN"
         response = requests.get(movie_api_url)
         data = response.json()
-        pprint(data)
         new_movie = Movie(
             id=data["id"],
             title=data["title"],
-            #The data in release_date includes month and day, we will want to get rid of.
             year=data["release_date"].split("-")[0],
             rating=data["vote_average"],
             ranking=0,  # Default ranking, can be updated later
@@ -179,13 +163,12 @@ def find_movie(movie_id):
             img_url=f"https://image.tmdb.org/t/p/w500{data['poster_path']}",
             description=data["overview"]
         )
+        # Add the new movie to the database
         db.session.add(new_movie)
         db.session.commit()
-        return redirect(url_for("home"))
+        return redirect(url_for("edit_movie", movie_id=new_movie.id))
     return "Movie not found", 404
     
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
