@@ -78,13 +78,62 @@ def all_cafes():
     cafes_list = [to_dict(cafe) for cafe in cafes]
     return jsonify(cafes=cafes_list)
 
-# HTTP GET - Read Record
+@app.route("/search")
+def search_cafe():
+    query_location = request.args.get("loc")
+    cafe = Cafe.query.filter_by(location=query_location).first()
+    if cafe:
+        return jsonify(cafe=to_dict(cafe))
+    else:
+        return jsonify(error={"Not Found": "Sorry, we don't have a cafe at that location."}), 404
 
 # HTTP POST - Create Record
-
-# HTTP PUT/PATCH - Update Record
-
-# HTTP DELETE - Delete Record
+# Create a new cafe using form data
+# This was tested using Postman with the following form data:
+@app.route("/add", methods=["POST"])
+def add_cafe():
+    new_cafe = Cafe(
+        name=request.form.get("name"),
+        map_url=request.form.get("map_url"),
+        img_url=request.form.get("img_url"),
+        location=request.form.get("location"),
+        seats=request.form.get("seats"),
+        has_toilet=request.form.get("has_toilet") == "true",
+        has_wifi=request.form.get("has_wifi") == "true",
+        has_sockets=request.form.get("has_sockets") == "true",
+        can_take_calls=request.form.get("can_take_calls") == "true",
+        coffee_price=request.form.get("coffee_price"),
+    )
+    db.session.add(new_cafe)
+    db.session.commit()
+    if new_cafe:
+        return jsonify(response={"success": "Successfully added the new cafe."}), 201
+    else:
+        return jsonify(error={"Not Found": "Sorry, we couldn't add the cafe."}), 404
+    
+@app.route("/update-price/<int:cafe_id>", methods=["PATCH"])
+def update_cafe_price(cafe_id):
+    cafe = Cafe.query.get(cafe_id)
+    if cafe:
+        new_price = request.form.get("coffee_price")
+        if new_price:
+            cafe.coffee_price = new_price
+            db.session.commit()
+            return jsonify(response={"success": "Successfully updated the coffee price."}), 200
+        else:
+            return jsonify(error={"Bad Request": "Please provide a new coffee price."}), 400
+    else:
+        return jsonify(error={"Not Found": "Cafe not found."}), 404
+    
+@app.route("/report-closed/<int:cafe_id>", methods=["DELETE"])
+def report_closed_cafe(cafe_id):
+    cafe = Cafe.query.get(cafe_id)
+    if cafe:
+        db.session.delete(cafe)
+        db.session.commit()
+        return jsonify(response={"success": "Successfully reported the cafe as closed."}), 200
+    else:
+        return jsonify(error={"Not Found": "Cafe not found."}), 404
 
 
 if __name__ == '__main__':
