@@ -1,3 +1,42 @@
+"""
+main.py
+
+A Flask-based blog application with RESTful routes, using SQLAlchemy for ORM, Flask-WTF for forms, and CKEditor for rich text editing.
+
+Modules and Extensions:
+- Flask: Web framework.
+- Flask-Bootstrap: For Bootstrap 5 integration.
+- Flask-SQLAlchemy: Database ORM.
+- Flask-WTF: Form handling and validation.
+- Flask-CKEditor: Rich text editor for blog content.
+- WTForms: Form fields and validators.
+- SQLAlchemy: ORM base and column types.
+- datetime: For date handling.
+- os: For file path management.
+
+Database:
+- SQLite database located in the instance folder.
+- BlogPost model represents a blog post with fields: id, title, subtitle, date, body, author, img_url.
+
+Forms:
+- CreatePostForm: Form for creating and editing blog posts, with fields for title, subtitle, author, image URL, and body.
+
+Routes:
+- '/': Home page displaying all blog posts.
+- '/post/<int:post_id>': Displays a single blog post.
+- '/new-post': Form to create a new blog post.
+- '/edit-post/<int:post_id>': Form to edit an existing blog post.
+- '/delete-post/<int:post_id>': Deletes a blog post.
+- '/about': About page.
+- '/contact': Contact page.
+
+Templates:
+- Renders templates for index, post, make-post, about, and contact pages.
+
+Other:
+- Sets current year as a global Jinja variable for templates.
+- Runs the app in debug mode on port 5003.
+"""
 from flask import Flask, render_template, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
@@ -10,18 +49,7 @@ from flask_ckeditor import CKEditor, CKEditorField
 from datetime import date
 import os
 
-'''
-Make sure the required packages are installed: 
-Open the Terminal in PyCharm (bottom left). 
 
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from the requirements.txt for this project.
-'''
 current_dir = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -65,20 +93,20 @@ class CreatePostForm(FlaskForm):
 
 @app.route('/')
 def get_all_posts():
-    # TODO: Query the database for all the posts. Convert the data to a python list.
+    # Query the database for all the posts. Convert the data to a python list.
     with app.app_context():
         posts = db.session.query(BlogPost).all()
     return render_template("index.html", all_posts=posts)
 
-# TODO: Add a route so that you can click on individual posts.
+# Add a route so that you can click on individual posts.
 @app.route('/post/<int:post_id>')
 def show_post(post_id):
-    # TODO: Retrieve a BlogPost from the database based on the post_id
+    # Retrieve a BlogPost from the database based on the post_id
     requested_post = db.session.query(BlogPost).get(post_id)
     return render_template("post.html", post=requested_post)
 
 
-# TODO: add_new_post() to create a new blog post
+# add_new_post() to create a new blog post
 @app.route("/new-post", methods=["GET", "POST"])
 def add_new_post():
     form = CreatePostForm()
@@ -96,7 +124,7 @@ def add_new_post():
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
-# TODO: edit_post() to change an existing blog post
+# edit_post() to change an existing blog post
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
 def edit_post(post_id):
     post = db.session.query(BlogPost).get(post_id)
@@ -117,15 +145,15 @@ def edit_post(post_id):
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form, is_edit=True, post_id=post_id)
 
-# TODO: delete_post() to remove a blog post from the database
-@app.route("/delete-post/<int:post_id>", methods=["POST"])
+# delete_post() to remove a blog post from the database
+@app.route("/delete-post/<int:post_id>", methods=["GET", "POST"])
 def delete_post(post_id):
     post = db.session.query(BlogPost).get(post_id)
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for("get_all_posts"))
 
-# Below is the code from previous lessons. No changes needed.
+# Additional routes for about and contact pages
 @app.route("/about")
 def about():
     return render_template("about.html")
