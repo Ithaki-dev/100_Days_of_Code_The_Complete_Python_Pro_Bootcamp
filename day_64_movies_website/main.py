@@ -51,7 +51,6 @@ Bootstrap5(app)
 # API URL and headers for The Movie Database (TMDB)
 url = "https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1"
 access_token = "your_access_token_here"  # Replace with your actual access token
-api_key = "your_api_key_here"  # Replace with your actual API key
 headers = {
     "accept": "application/json",
     "Authorization": "Bearer " + access_token
@@ -150,8 +149,8 @@ def add_movie():
 def find_movie(movie_id):
     print(movie_id)
     if movie_id:
-        movie_api_url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={api_key}'
-        response = requests.get(movie_api_url)
+        movie_api_url = f'https://api.themoviedb.org/3/movie/{movie_id}'
+        response = requests.get(movie_api_url, headers=headers)
         data = response.json()
         new_movie = Movie(
             id=data["id"],
