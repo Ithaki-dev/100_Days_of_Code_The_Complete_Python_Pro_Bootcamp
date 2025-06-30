@@ -26,6 +26,7 @@ flask-bootstrap>=3.3.7.1
 flask-sqlalchemy>=3.1.0
 flask-wtf>=1.2.0
 flask-ckeditor>=0.5.0
+flask-login>=0.6.0
 
 # Database
 sqlalchemy>=2.0.0
