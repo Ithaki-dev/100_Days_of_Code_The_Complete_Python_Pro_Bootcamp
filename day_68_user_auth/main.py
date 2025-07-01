@@ -5,7 +5,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 import os
-
+import time
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
 current_path = os.path.dirname(os.path.abspath(__file__))
@@ -56,12 +56,17 @@ def register():
         email = request.form['email']
         password = request.form['password']
         name = request.form['name']
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
         new_user = User(email=email, password=hashed_password, name=name)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Registration successful! Please log in.', 'success')
-        return redirect(url_for('login'))
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already exists. Please log in.', 'danger')
+            return redirect(url_for('login'))
+        else:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration successful! Please log in.', 'success')
+            return redirect(url_for('login'))
     return render_template("register.html")
 
 
@@ -76,7 +81,10 @@ def login():
             flash('Login successful!', 'success')
             return redirect(url_for('secrets'))
         else:
-            flash('Login failed. Check your email and/or password.', 'danger')
+            if user and not check_password_hash(user.password, password):
+                flash('Incorrect password. Please try again.', 'danger')
+            elif not user:
+                flash('Email not found. Please register first.', 'danger')
             return redirect(url_for('login'))
     return render_template("login.html")
 
