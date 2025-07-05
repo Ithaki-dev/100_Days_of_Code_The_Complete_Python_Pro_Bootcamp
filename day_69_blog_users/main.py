@@ -33,15 +33,15 @@ ckeditor = CKEditor(app)
 Bootstrap5(app)
 
 # TODO: Configure Flask-Login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login"
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view = "login"
 
 
 # CREATE DATABASE
 class Base(DeclarativeBase):
     pass
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(current_path, 'instance/posts.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{current_path}/instance/posts.db'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
