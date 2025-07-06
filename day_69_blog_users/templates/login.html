@@ -24,6 +24,9 @@ include "header.html" %}
       <!-- TODO: add a flash message here for users registering twice -->
       <div class="col-lg-8 col-md-10 mx-auto">
         <!--TODO: render login form here-->
+        <form method="POST" action="/login">
+          {{ render_form(form) }}
+          <button type="submit" class="btn btn-primary">Log In</button>
       </div>
     </div>
   </div>
