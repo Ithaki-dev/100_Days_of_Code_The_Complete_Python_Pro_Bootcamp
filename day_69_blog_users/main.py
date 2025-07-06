@@ -81,9 +81,9 @@ def register():
             return redirect(url_for('login'))
         # Create a new user
         new_user = User(
-            email=form.email.data,
+            username=form.username.data,
             password=generate_password_hash(form.password.data, method='pbkdf2:sha256', salt_length=8),
-            username=form.username.data
+            email=form.email.data
         )
         db.session.add(new_user)
         db.session.commit()
@@ -106,7 +106,7 @@ def login():
         else:
             flash("Email or password is incorrect, please try again.")
             return redirect(url_for('login'))
-    return render_template("login.html")
+    return render_template("login.html" , form=form)
 
 
 @app.route('/logout')
