@@ -69,6 +69,23 @@ class User(UserMixin, db.Model):
 with app.app_context():
     db.create_all()
 
+# Admin decorator to restrict access to certain routes
+
+def is_admin(user):
+    """Verifica si el usuario es admin (ID = 1)"""
+    return user.is_authenticated and user.id == 1
+
+def admin_required(f):
+    """Decorador que requiere que el usuario sea admin"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        if not is_admin(current_user):
+            abort(403)  # Forbidden
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 # TODO: Use Werkzeug to hash the user's password when creating a new user.
 @app.route('/register', methods=["GET", "POST"])
@@ -132,6 +149,7 @@ def show_post(post_id):
 
 # TODO: Use a decorator so only an admin user can create a new post
 @app.route("/new-post", methods=["GET", "POST"])
+@admin_required
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -151,6 +169,7 @@ def add_new_post():
 
 # TODO: Use a decorator so only an admin user can edit a post
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
+@admin_required
 def edit_post(post_id):
     post = db.get_or_404(BlogPost, post_id)
     edit_form = CreatePostForm(
@@ -173,6 +192,7 @@ def edit_post(post_id):
 
 # TODO: Use a decorator so only an admin user can delete a post
 @app.route("/delete/<int:post_id>")
+@admin_required
 def delete_post(post_id):
     post_to_delete = db.get_or_404(BlogPost, post_id)
     db.session.delete(post_to_delete)
