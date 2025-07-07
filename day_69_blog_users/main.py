@@ -25,6 +25,7 @@ On MacOS type:
 pip3 install -r requirements.txt
 
 This will install the packages from the requirements.txt for this project.
+install flask_bootstrap, flask_ckeditor, flask_gravatar, flask_sqlalchemy, flask_login, sqlalchemy, werkzeug
 '''
 current_path = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
