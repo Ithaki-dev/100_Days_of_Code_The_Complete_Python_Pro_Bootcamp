@@ -28,10 +28,29 @@ This will install the packages from the requirements.txt for this project.
 install flask_bootstrap, flask_ckeditor, flask_gravatar, flask_sqlalchemy, flask_login, sqlalchemy, werkzeug
 '''
 current_path = os.path.dirname(os.path.abspath(__file__))
+# Initialize Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 ckeditor = CKEditor(app)
 Bootstrap5(app)
+# Gravatar configuration
+gravatar = Gravatar(app,
+                    size=100,
+                    rating='g',
+                    default='retro',
+                    force_default=False,
+                    force_lower=False,
+                    use_ssl=False,
+                    base_url=None)
+
+# Global variables
+@app.context_processor
+def inject_global_vars():
+    return {
+        'current_year': date.today().year,
+        'current_date': date.today(),
+        'app_name': 'My Blog'
+    }
 
 # TODO: Configure Flask-Login
 login_manager = LoginManager()
@@ -77,7 +96,7 @@ class BlogPost(db.Model):
     author_user: Mapped["User"] = relationship("User", back_populates="posts")
 
     # Relationship with Comments
-    comments: Mapped[list["Comments"]] = relationship("Comments", back_populates="post")
+    comments: Mapped[list["Comments"]] = relationship("Comments", back_populates="post", cascade="all, delete-orphan")
 
 # Table comments
 class Comments(db.Model):
@@ -182,7 +201,7 @@ def show_post(post_id):
         )
         db.session.add(new_comment)
         db.session.commit()
-        flash("Your comment has been added!")
+        # flash("Your comment has been added!")
         return redirect(url_for('show_post', post_id=post_id))
     comments = db.session.execute(
         db.select(Comments)
