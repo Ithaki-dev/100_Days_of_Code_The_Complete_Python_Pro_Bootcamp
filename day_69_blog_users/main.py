@@ -184,7 +184,15 @@ def show_post(post_id):
         db.session.commit()
         flash("Your comment has been added!")
         return redirect(url_for('show_post', post_id=post_id))
-    return render_template("post.html", post=requested_post, form=form)
+    comments = db.session.execute(
+        db.select(Comments)
+        .join(User, Comments.author_id == User.id)
+        .where(Comments.post_id == post_id)
+        .order_by(Comments.id.desc())  # Más recientes primero
+    ).scalars().all()
+    
+    return render_template("post.html", post=requested_post, form=form, comments=comments)
+
 
 
 # TODO: Use a decorator so only an admin user can create a new post
