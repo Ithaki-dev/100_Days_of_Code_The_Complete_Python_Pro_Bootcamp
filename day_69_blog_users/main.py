@@ -48,6 +48,17 @@ db.init_app(app)
 
 
 # CONFIGURE TABLES
+# TODO: Create a User table for all your registered users. 
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(100), nullable=False)
+    username: Mapped[str] = mapped_column(String(1000), nullable=False)
+    # Relationship with BlogPost
+    posts: Mapped[list["BlogPost"]] = relationship("BlogPost", back_populates="author_user")
+
+
 class BlogPost(db.Model):
     __tablename__ = "blog_posts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -57,14 +68,13 @@ class BlogPost(db.Model):
     body: Mapped[str] = mapped_column(Text, nullable=False)
     author: Mapped[str] = mapped_column(String(250), nullable=False)
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
+    # Foreign Key: Cada post pertenece a un usuario
+    author_id: Mapped[int] = mapped_column(Integer, db.ForeignKey('users.id'))
+    
+    # Many-to-One relationship: Muchos posts pueden pertenecer a un usuario
+    author_user: Mapped["User"] = relationship("User", back_populates="posts")
 
-# TODO: Create a User table for all your registered users. 
-class User(UserMixin, db.Model):
-    __tablename__ = "users"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String(100), nullable=False)
-    username: Mapped[str] = mapped_column(String(1000), nullable=False)
+
 
 with app.app_context():
     db.create_all()
@@ -158,7 +168,8 @@ def add_new_post():
             subtitle=form.subtitle.data,
             body=form.body.data,
             img_url=form.img_url.data,
-            author=current_user,
+            author=current_user.username,  # Use the current user's username
+            author_id=current_user.id,  # Use the current user's ID
             date=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_post)
@@ -183,7 +194,8 @@ def edit_post(post_id):
         post.title = edit_form.title.data
         post.subtitle = edit_form.subtitle.data
         post.img_url = edit_form.img_url.data
-        post.author = current_user
+        post.author = current_user.username
+        post.author_id = current_user.id
         post.body = edit_form.body.data
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
