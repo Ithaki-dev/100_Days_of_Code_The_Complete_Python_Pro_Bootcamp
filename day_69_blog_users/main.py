@@ -10,7 +10,7 @@ from sqlalchemy import Integer, String, Text
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 # Import your forms from the forms.py
-from forms import CreatePostForm, LoginForm, RegisterForm 
+from forms import CreatePostForm, LoginForm, RegisterForm, CommentForm
 import os
 
 
@@ -28,10 +28,29 @@ This will install the packages from the requirements.txt for this project.
 install flask_bootstrap, flask_ckeditor, flask_gravatar, flask_sqlalchemy, flask_login, sqlalchemy, werkzeug
 '''
 current_path = os.path.dirname(os.path.abspath(__file__))
+# Initialize Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 ckeditor = CKEditor(app)
 Bootstrap5(app)
+# Gravatar configuration
+gravatar = Gravatar(app,
+                    size=100,
+                    rating='g',
+                    default='retro',
+                    force_default=False,
+                    force_lower=False,
+                    use_ssl=False,
+                    base_url=None)
+
+# Global variables
+@app.context_processor
+def inject_global_vars():
+    return {
+        'current_year': date.today().year,
+        'current_date': date.today(),
+        'app_name': 'My Blog'
+    }
 
 # TODO: Configure Flask-Login
 login_manager = LoginManager()
@@ -48,6 +67,19 @@ db.init_app(app)
 
 
 # CONFIGURE TABLES
+# TODO: Create a User table for all your registered users. 
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(100), nullable=False)
+    username: Mapped[str] = mapped_column(String(1000), nullable=False)
+    # Relationship with BlogPost
+    posts: Mapped[list["BlogPost"]] = relationship("BlogPost", back_populates="author_user")
+    # Relationship with Comments
+    comments: Mapped[list["Comments"]] = relationship("Comments", back_populates="author")
+
+
 class BlogPost(db.Model):
     __tablename__ = "blog_posts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -57,17 +89,46 @@ class BlogPost(db.Model):
     body: Mapped[str] = mapped_column(Text, nullable=False)
     author: Mapped[str] = mapped_column(String(250), nullable=False)
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
+    # Foreign Key: Cada post pertenece a un usuario
+    author_id: Mapped[int] = mapped_column(Integer, db.ForeignKey('users.id'))
+    
+    # Many-to-One relationship: Muchos posts pueden pertenecer a un usuario
+    author_user: Mapped["User"] = relationship("User", back_populates="posts")
 
-# TODO: Create a User table for all your registered users. 
-class User(UserMixin, db.Model):
-    __tablename__ = "users"
+    # Relationship with Comments
+    comments: Mapped[list["Comments"]] = relationship("Comments", back_populates="post", cascade="all, delete-orphan")
+
+# Table comments
+class Comments(db.Model):
+    __tablename__ = "comments"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String(100), nullable=False)
-    username: Mapped[str] = mapped_column(String(1000), nullable=False)
+    post_id: Mapped[int] = mapped_column(Integer, db.ForeignKey('blog_posts.id'))
+    comment_text: Mapped[str] = mapped_column(Text, nullable=False)
+    author_id: Mapped[int] = mapped_column(Integer, db.ForeignKey('users.id'))
+    
+    # Relationships
+    post: Mapped["BlogPost"] = relationship("BlogPost", back_populates="comments")
+    author: Mapped["User"] = relationship("User")
 
 with app.app_context():
     db.create_all()
+
+# Admin decorator to restrict access to certain routes
+
+def is_admin(user):
+    """Verifica si el usuario es admin (ID = 1)"""
+    return user.is_authenticated and user.id == 1
+
+def admin_required(f):
+    """Decorador que requiere que el usuario sea admin"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        if not is_admin(current_user):
+            abort(403)  # Forbidden
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 # TODO: Use Werkzeug to hash the user's password when creating a new user.
@@ -124,14 +185,38 @@ def get_all_posts():
 
 
 # TODO: Allow logged-in users to comment on posts
-@app.route("/post/<int:post_id>")
+@app.route("/post/<int:post_id>", methods=["GET", "POST"])
 def show_post(post_id):
     requested_post = db.get_or_404(BlogPost, post_id)
-    return render_template("post.html", post=requested_post)
+    form = CommentForm()
+    if form.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash("You need to be logged in to comment.")
+            return redirect(url_for('login'))
+        
+        new_comment = Comments(
+            post_id=requested_post.id,
+            comment_text=form.comment.data,
+            author_id=current_user.id  # Use the current user's ID
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        # flash("Your comment has been added!")
+        return redirect(url_for('show_post', post_id=post_id))
+    comments = db.session.execute(
+        db.select(Comments)
+        .join(User, Comments.author_id == User.id)
+        .where(Comments.post_id == post_id)
+        .order_by(Comments.id.desc())  # Más recientes primero
+    ).scalars().all()
+    
+    return render_template("post.html", post=requested_post, form=form, comments=comments)
+
 
 
 # TODO: Use a decorator so only an admin user can create a new post
 @app.route("/new-post", methods=["GET", "POST"])
+@admin_required
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -140,7 +225,8 @@ def add_new_post():
             subtitle=form.subtitle.data,
             body=form.body.data,
             img_url=form.img_url.data,
-            author=current_user,
+            author=current_user.username,  # Use the current user's username
+            author_id=current_user.id,  # Use the current user's ID
             date=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_post)
@@ -151,6 +237,7 @@ def add_new_post():
 
 # TODO: Use a decorator so only an admin user can edit a post
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
+@admin_required
 def edit_post(post_id):
     post = db.get_or_404(BlogPost, post_id)
     edit_form = CreatePostForm(
@@ -164,7 +251,8 @@ def edit_post(post_id):
         post.title = edit_form.title.data
         post.subtitle = edit_form.subtitle.data
         post.img_url = edit_form.img_url.data
-        post.author = current_user
+        post.author = current_user.username
+        post.author_id = current_user.id
         post.body = edit_form.body.data
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
@@ -173,6 +261,7 @@ def edit_post(post_id):
 
 # TODO: Use a decorator so only an admin user can delete a post
 @app.route("/delete/<int:post_id>")
+@admin_required
 def delete_post(post_id):
     post_to_delete = db.get_or_404(BlogPost, post_id)
     db.session.delete(post_to_delete)
