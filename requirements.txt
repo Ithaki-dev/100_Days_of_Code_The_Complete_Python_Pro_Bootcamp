@@ -44,9 +44,6 @@ prettytable>=3.8.0
 # Natural Language Processing
 nltk>=3.8.0
 
-# Email
-smtplib-ssl>=1.1.0
-
 # Cloud Services
 kubernetes>=28.1.0
 
