@@ -10,3 +10,4 @@ flask_sqlalchemy==3.0.3
 SQLAlchemy==2.0.41
 gunicorn==21.2.0
 python-dotenv==1.0.0
+psycopg2-binary
