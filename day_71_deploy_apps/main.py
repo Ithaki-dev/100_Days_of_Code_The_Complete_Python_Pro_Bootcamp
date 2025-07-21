@@ -62,11 +62,11 @@ login_manager.login_view = "login"
 
 
 # CREATE DATABASE
-class Base(DeclarativeBase):
-    pass
+# class Base(DeclarativeBase):
+#     pass
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{current_path}/instance/posts.db'
-db = SQLAlchemy(model_class=Base)
-db.init_app(app)
+db = SQLAlchemy(app)
+# db.init_app(app)
 
 
 # CONFIGURE TABLES
@@ -288,4 +288,4 @@ def load_user(user_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=False, port=5002)
+    app.run(debug=True, port=5002)
