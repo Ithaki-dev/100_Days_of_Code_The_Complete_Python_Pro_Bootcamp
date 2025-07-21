@@ -11,8 +11,10 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 # Import your forms from the forms.py
 from forms import CreatePostForm, LoginForm, RegisterForm, CommentForm
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
 
 '''
 Make sure the required packages are installed: 
@@ -30,7 +32,7 @@ install flask_bootstrap, flask_ckeditor, flask_gravatar, flask_sqlalchemy, flask
 current_path = os.path.dirname(os.path.abspath(__file__))
 # Initialize Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 # Gravatar configuration
