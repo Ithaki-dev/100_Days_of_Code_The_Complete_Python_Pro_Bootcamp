@@ -64,7 +64,7 @@ login_manager.login_view = "login"
 # CREATE DATABASE
 # class Base(DeclarativeBase):
 #     pass
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///100_Days_of_Code_The_Complete_Python_Pro_Bootcamp/day_71_deploy_apps/instance/posts.db'
 db = SQLAlchemy(app)
 # db.init_app(app)
 
