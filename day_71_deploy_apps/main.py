@@ -33,7 +33,7 @@ current_path = os.path.dirname(os.path.abspath(__file__))
 # Initialize Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-print(os.getenv('SECRET_KEY'))
+
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 # Gravatar configuration
@@ -64,6 +64,7 @@ login_manager.login_view = "login"
 # CREATE DATABASE
 # class Base(DeclarativeBase):
 #     pass
+print(os.getenv('DATABASE_URL'))
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 db = SQLAlchemy(app)
 # db.init_app(app)
