@@ -49,3 +49,6 @@ kubernetes>=28.1.0
 
 # Testing
 unittest-xml-reporting>=3.2.0
+
+# Gunicorn for WSGI HTTP Server
+gunicorn==21.2.0

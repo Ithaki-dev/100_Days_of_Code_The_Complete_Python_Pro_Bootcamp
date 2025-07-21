@@ -1,0 +1,106 @@
+{% include "header.html" %}
+{% from "bootstrap5/form.html" import render_form %}
+{% block content %}
+  <!-- Page Header-->
+  <header class="masthead" style="background-image: url('{{post.img_url}}')">
+    <div class="container position-relative px-4 px-lg-5">
+      <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+          <div class="post-heading">
+            <h1>{{ post.title }}</h1>
+            <h2 class="subheading">{{ post.subtitle }}</h2>
+            <span class="meta">
+              Posted by
+              <a href="#">{{ post.author }}</a>
+              on {{ post.date }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container px-4 px-lg-5">
+      <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+          {{ post.body|safe }}
+          <!--TODO: Only show Edit Post button if user id is 1 (admin user) -->
+          {% if current_user.id == 1 %}
+            <div class="d-flex justify-content-end mb-4">
+              <a
+                class="btn btn-primary float-right"
+                href="{{url_for('edit_post', post_id=post.id)}}"
+              >Edit Post</a>
+            </div>
+          {% endif %}
+          <!-- Comments Area - ESTRUCTURA MEJORADA -->
+          <div class="comments-section mt-5">
+            <hr class="my-4">
+
+            <!-- Formulario para agregar comentario -->
+            {% if current_user.is_authenticated %}
+              <div class="mb-5">
+                <h4 class="mb-3">Leave a Comment:</h4>
+                {{ form.hidden_tag() }}
+                {{ render_form(form) }}
+              </div>
+            {% else %}
+              <div class="mb-5">
+                <h4 class="mb-3">Comments</h4>
+                <p class="alert alert-info">
+                  <a href="{{ url_for('login') }}" class="alert-link">Login</a> to leave a comment.
+                </p>
+              </div>
+            {% endif %}
+
+            <!-- Lista de comentarios -->
+            <div class="comments-list">
+              {% if comments %}
+                <h4 class="mb-4">{{ comments|length }} Comment{{ 's' if comments|length != 1 else '' }}</h4>
+
+                <!-- Lista sin restricciones de altura -->
+                <div class="comments-container">
+                  {% for comment in comments %}
+                    <div class="comment-item mb-4 p-4 border rounded bg-light">
+                      <div class="d-flex">
+                        <!-- Avatar -->
+                        <div class="comment-avatar me-3 flex-shrink-0">
+                          <img 
+                            src="{{ comment.author.email | gravatar(size=60) }}" 
+                            class="rounded-circle border border-2" 
+                            width="60" 
+                            height="60"
+                            alt="{{ comment.author.username }}'s Avatar"
+                            style="object-fit: cover;"
+                          />
+                        </div>
+
+                        <!-- Contenido del comentario -->
+                        <div class="comment-content flex-grow-1">
+                          <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="mb-0 fw-bold text-primary">{{ comment.author.username }}</h6>
+                            <!-- <small class="text-muted">Just now</small> -->
+                          </div>
+                          <p class="mb-0 lh-base">{{ comment.comment_text }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="text-center py-5">
+                  <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                  <p class="text-muted fs-5">No comments yet. Be the first to comment!</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  {% include "footer.html" %}
+{% endblock %}
