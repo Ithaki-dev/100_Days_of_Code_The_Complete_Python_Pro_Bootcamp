@@ -33,6 +33,7 @@ current_path = os.path.dirname(os.path.abspath(__file__))
 # Initialize Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+print(os.getenv('SECRET_KEY'))
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 # Gravatar configuration
