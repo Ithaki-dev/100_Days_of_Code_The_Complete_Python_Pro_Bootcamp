@@ -65,7 +65,7 @@ login_manager.login_view = "login"
 # class Base(DeclarativeBase):
 #     pass
 print(os.getenv('DATABASE_URL'))
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///instance/posts.db')
 db = SQLAlchemy(app)
 # db.init_app(app)
 
