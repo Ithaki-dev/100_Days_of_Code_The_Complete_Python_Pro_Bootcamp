@@ -1,0 +1,34 @@
+<!-- books/templates/books/my_books.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>My Saved Books</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    {% include 'books/navbar.html' %}
+    <div class="container mt-4">
+        <h1>My Saved Books</h1>
+        <div class="row">
+            {% for book in books %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ book.cover_url }}" class="card-img-top" alt="Cover">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                        <p class="card-text">{{ book.author }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'edit_book' book.id %}" class="btn btn-warning">Edit</a>
+                        <a href="{% url 'delete_book' book.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>You haven't saved any books yet. Go find one!</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
